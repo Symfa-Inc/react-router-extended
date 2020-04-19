@@ -3,6 +3,13 @@
   "version": "1.2.0",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
+  "keywords": [
+    "react",
+    "react-router-dom",
+    "react-nested-routing",
+    "react-child-routing",
+    "react-extended-router"
+  ],
   "repository": {
     "url": "https://gitlab.aisnovations.com/modules/react-router-extended",
     "type": "git"
