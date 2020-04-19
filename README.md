@@ -22,7 +22,7 @@ Lets imagine, we have the page, in that page, nested 2 subpages/tabs
 			component: FirstNestedChild,
 			path: '/page-with-tabs/first-nested-child',
 		},
- 		{
+		{
 			component: SecondNestedChild,
 			path: '/page-with-tabs/second-nested-child',
 		},
