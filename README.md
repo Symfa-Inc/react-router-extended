@@ -18,24 +18,22 @@ Lets imagine, we have the page, in that page, nested 2 subpages/tabs
 	path="/page-with-tabs"
 	component={PageWithTabs}
 	childs={[
- 		{
-            component: FirstNestedChild,
-            path: '/page-with-tabs/first-nested-child',
+		{
+			component: FirstNestedChild,
+			path: '/page-with-tabs/first-nested-child',
 		},
  		{
-            component: SecondNestedChild,
-            path: '/page-with-tabs/second-nested-child',
+			component: SecondNestedChild,
+			path: '/page-with-tabs/second-nested-child',
 		},
-
-
 	]}
 />
 
-function PageWithTabs({childRoutes}) {
+function PageWithTabs({ childRoutes }) {
   return (
 	<h2>
 		Page with tabs
-		<div class=content>
+		<div class="content">
 			{childRoutes}
 		</div>
 	</h2>
@@ -73,7 +71,6 @@ export class LoginGuard implements Guard {
     return isLogin;
   }
 }
-
 ```
 
 And how we can use it:
@@ -82,10 +79,9 @@ And how we can use it:
 <ExtendedRouter
 	path="/page-with-tabs"
 	component={PageWithTabs}
-	guards: [new LoginGuard ()],
-	redirectUrl: '/login',
+	guards={[ new LoginGuard () ]},
+	redirectUrl='/login'
 />
-
 ```
 
 **ExtendedRouter** has prop guards it’s an array, which can be used with combining of guards. Guards are called consistently, from left to right, as they placed at an array. As soon as at least one guard returned false, the chain will be broken and stopped and redirect will happen by default redirect url = ‘/’, we can change it though prop **redirectUrl** as we did at the example above.
@@ -112,11 +108,10 @@ And how we can use it:
 <ExtendedRouter
 	path="/page-with-tabs"
 	component={PageWithTabs}
-	resolvers: {
+	resolvers={{
 		userInfo: new UserInfoResolver()
-	 },
+	 }},
 />
-
 ```
 
 **ExtendedRouter** has props - resolvers, it’s an object, with key - the prop name in component and the value it must be the instance our’s resolver, in our case it’s a **new UserInfoResolver()**.
