@@ -72,6 +72,7 @@ var ExtentedRouterStatus;
     ExtentedRouterStatus[ExtentedRouterStatus["SUCCESS"] = 1] = "SUCCESS";
     ExtentedRouterStatus[ExtentedRouterStatus["FAIL"] = 2] = "FAIL";
 })(ExtentedRouterStatus || (ExtentedRouterStatus = {}));
+//# sourceMappingURL=types.js.map
 
 function useManager(_a) {
     var resolvers = _a.resolvers, guards = _a.guards;
@@ -143,6 +144,7 @@ function useManager(_a) {
     }
     return { loadResolvers: loadResolvers, getProps: getProps, checkGuards: checkGuards };
 }
+//# sourceMappingURL=hooks.js.map
 
 var sleep = function (t) { return new Promise(function (res) { return setTimeout(function () { return res(); }, t); }); };
 var checkIfPathIsUndefined = function (path) {
@@ -195,6 +197,7 @@ var setKey = function (path) {
     }
     return path;
 };
+//# sourceMappingURL=helpers.js.map
 
 var ExtendedRouter = function (_a) {
     var _b;
@@ -204,6 +207,7 @@ var ExtendedRouter = function (_a) {
     }
     var routerManager = useManager({ resolvers: resolvers, guards: guards });
     var _f = useState(ExtentedRouterStatus.INITIAL), status = _f[0], setStatus = _f[1];
+    var initialLoading = useRef(true);
     var resultComponents = (_b = {},
         _b[ExtentedRouterStatus.INITIAL] = null,
         _b[ExtentedRouterStatus.SUCCESS] = null,
@@ -217,6 +221,9 @@ var ExtendedRouter = function (_a) {
                     case 0:
                         isMatch = isPathMatched(location.pathname, path);
                         if (!isMatch) return [3 /*break*/, 4];
+                        if (status === ExtentedRouterStatus.SUCCESS && !initialLoading.current) {
+                            setStatus(ExtentedRouterStatus.INITIAL);
+                        }
                         return [4 /*yield*/, routerManager.checkGuards()];
                     case 1:
                         guardStatus = _a.sent();
@@ -227,6 +234,7 @@ var ExtendedRouter = function (_a) {
                         _a.label = 3;
                     case 3:
                         setStatus(guardStatus);
+                        initialLoading.current = false;
                         _a.label = 4;
                     case 4: return [2 /*return*/];
                 }

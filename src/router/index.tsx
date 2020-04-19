@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { ExtendedRouterProps, ExtentedRouterStatus } from './types';
 import { useManager } from './hooks';
@@ -23,6 +23,8 @@ export const ExtendedRouter = ({
   const routerManager = useManager({ resolvers, guards });
   const [status, setStatus] = useState(ExtentedRouterStatus.INITIAL);
 
+  const initialLoading = useRef(true);
+
   const resultComponents = {
     [ExtentedRouterStatus.INITIAL]: null,
     [ExtentedRouterStatus.SUCCESS]: null,
@@ -34,12 +36,18 @@ export const ExtendedRouter = ({
       const isMatch = isPathMatched(location.pathname, path);
 
       if (isMatch) {
+        if (status === ExtentedRouterStatus.SUCCESS && !initialLoading.current) {
+          setStatus(ExtentedRouterStatus.INITIAL);
+        }
+
         const guardStatus = await routerManager.checkGuards();
 
         if (guardStatus === ExtentedRouterStatus.SUCCESS && Object.keys(resolvers).length) {
           await routerManager.loadResolvers();
         }
         setStatus(guardStatus);
+
+        initialLoading.current = false;
       }
     })();
   }, [location.pathname]);
