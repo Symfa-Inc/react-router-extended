@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ParentComponentWithChildRoutes } from '../../../../../src/reactRouterAdvance';
+import { ParentComponentWithChildRoutes } from '../../reactRouterAdvance';
 import { StyledDiv } from '../../components/styled-div';
 
 export const TabPage = ({ childRoutes }: ParentComponentWithChildRoutes) => {

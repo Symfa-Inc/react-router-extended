@@ -72,7 +72,6 @@ var ExtentedRouterStatus;
     ExtentedRouterStatus[ExtentedRouterStatus["SUCCESS"] = 1] = "SUCCESS";
     ExtentedRouterStatus[ExtentedRouterStatus["FAIL"] = 2] = "FAIL";
 })(ExtentedRouterStatus || (ExtentedRouterStatus = {}));
-//# sourceMappingURL=types.js.map
 
 function useManager(_a) {
     var resolvers = _a.resolvers, guards = _a.guards;
@@ -144,7 +143,6 @@ function useManager(_a) {
     }
     return { loadResolvers: loadResolvers, getProps: getProps, checkGuards: checkGuards };
 }
-//# sourceMappingURL=hooks.js.map
 
 var sleep = function (t) { return new Promise(function (res) { return setTimeout(function () { return res(); }, t); }); };
 var checkIfPathIsUndefined = function (path) {
@@ -197,7 +195,6 @@ var setKey = function (path) {
     }
     return path;
 };
-//# sourceMappingURL=helpers.js.map
 
 var ExtendedRouter = function (_a) {
     var _b;

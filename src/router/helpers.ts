@@ -1,6 +1,6 @@
 import { matchPath } from 'react-router-dom';
 import * as UrlPattern from 'url-pattern';
-import { ExtentedRouterStatus, Guard, RouterPath, ExtendedRouterProps, PropsResolvers } from './types';
+import { ExtentedRouterStatus, Guard, RouterPath } from './types';
 
 export const sleep = (t: number) => new Promise(res => setTimeout(() => res(), t));
 
@@ -80,56 +80,4 @@ export const setKey = (path: RouterPath): string => {
     return path.join();
   }
   return path as string;
-};
-
-const flatMapForChildren = (extendedRoutes: ExtendedRouterProps[]): ExtendedRouterProps[] => {
-  const routes: ExtendedRouterProps[] = [];
-
-  extendedRoutes.forEach(router => {
-    routes.push(router);
-    if (router.childs && router.childs.length) {
-      routes.push(...flatMapForChildren(router.childs));
-    }
-  });
-  return routes;
-};
-
-export const getAllMatchedRoutes = (
-  currentPath: string,
-  extendedRoutes: ExtendedRouterProps[],
-): ExtendedRouterProps[] => {
-  const routesFlatMap = flatMapForChildren(extendedRoutes);
-  const routes = routesFlatMap.filter(router => isPathMatched(currentPath, router.path));
-  return routes;
-};
-
-interface RouterHelper extends ExtendedRouterProps {
-  currentPath: string;
-}
-export const routeHelper = ({
-  path,
-  // component: Component,
-  // redirectUrl,
-  // guards = [],
-  // resolvers = {},
-  // debounceWaitTime = 500,
-  childs,
-  currentPath,
-}: RouterHelper) => {
-  // console.log('hghhm', childs);
-
-  function hasChildren(): boolean {
-    // console.log(childs);
-    return typeof childs !== 'undefined' && childs.length !== 0;
-  }
-
-  function isFinalRoute(): boolean {
-    // if (hasChildren()) {
-    //   return false;
-    // }
-    // console.log('hjmm');
-    return path === currentPath; // TODO: need to replace to move smart compare
-  }
-
-  return { hasChildren, isFinalRoute };
 };
