@@ -20,6 +20,8 @@ export const ExtendedRouter = ({
     throw new Error('Extended router must be wrapper in usual router!');
   }
 
+  const innerRedirect = redirectUrl || '/';
+
   const routerManager = useManager({ resolvers, guards, pathname: location.pathname });
   const [status, setStatus] = useState(ExtentedRouterStatus.INITIAL);
 
@@ -28,7 +30,7 @@ export const ExtendedRouter = ({
   const resultComponents = {
     [ExtentedRouterStatus.INITIAL]: null,
     [ExtentedRouterStatus.SUCCESS]: null,
-    [ExtentedRouterStatus.FAIL]: <Redirect to={redirectUrl || '/'} />,
+    [ExtentedRouterStatus.FAIL]: null,
   };
 
   useEffect(() => {
@@ -36,10 +38,9 @@ export const ExtendedRouter = ({
       const isMatch = isPathMatched(location.pathname, path);
 
       if (isMatch) {
-        if (status === ExtentedRouterStatus.SUCCESS && !initialLoading.current) {
+        if (!initialLoading.current) {
           setStatus(ExtentedRouterStatus.INITIAL);
         }
-
         const guardStatus = await routerManager.checkGuards(location.pathname);
         if (guardStatus === ExtentedRouterStatus.SUCCESS && Object.keys(resolvers).length) {
           await routerManager.loadResolvers(location.pathname);
@@ -50,7 +51,6 @@ export const ExtendedRouter = ({
       }
     })();
   }, [location.pathname]);
-
   if (status === ExtentedRouterStatus.SUCCESS) {
     // If the status of the guards is passed
     if (childs.length) {
@@ -96,5 +96,8 @@ export const ExtendedRouter = ({
     );
   }
 
+  if (status === ExtentedRouterStatus.FAIL && location.pathname !== innerRedirect && redirectUrl !== undefined) {
+    return <Redirect to={innerRedirect} />;
+  }
   return resultComponents[status];
 };

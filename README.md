@@ -84,7 +84,7 @@ And how we can use it:
 />
 ```
 
-**ExtendedRouter** has prop guards it’s an array, which can be used with combining of guards. Guards are called consistently, from left to right, as they placed at an array. As soon as at least one guard returned false, the chain will be broken and stopped and redirect will happen by default redirect url = ‘/’, we can change it though prop **redirectUrl** as we did at the example above.
+**ExtendedRouter** has prop guards it’s an array, which can be used with combining of guards. Guards are called consistently, from left to right, as they placed at an array. As soon as at least one guard returned false, the chain will be broken and stopped, and redirect will happen and we need to specify on which URL it will be it though prop **redirectUrl** as we did at the example above.
 
 ##Resolver:
 Time to time, we need to preload data, before the show the UI, and the resolver purpose to facilitate us with it.

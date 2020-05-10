@@ -1,6 +1,6 @@
 /* eslint-disable */
 import React, { useRef, useState, useEffect } from 'react';
-import { matchPath, Redirect, Route } from 'react-router-dom';
+import { matchPath, Route, Redirect } from 'react-router-dom';
 import * as UrlPattern from 'url-pattern';
 
 /*! *****************************************************************************
@@ -212,13 +212,14 @@ var ExtendedRouter = function (_a) {
     if (typeof location === 'undefined') {
         throw new Error('Extended router must be wrapper in usual router!');
     }
+    var innerRedirect = redirectUrl || '/';
     var routerManager = useManager({ resolvers: resolvers, guards: guards, pathname: location.pathname });
     var _f = useState(ExtentedRouterStatus.INITIAL), status = _f[0], setStatus = _f[1];
     var initialLoading = useRef(true);
     var resultComponents = (_b = {},
         _b[ExtentedRouterStatus.INITIAL] = null,
         _b[ExtentedRouterStatus.SUCCESS] = null,
-        _b[ExtentedRouterStatus.FAIL] = React.createElement(Redirect, { to: redirectUrl || '/' }),
+        _b[ExtentedRouterStatus.FAIL] = null,
         _b);
     useEffect(function () {
         (function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -228,7 +229,7 @@ var ExtendedRouter = function (_a) {
                     case 0:
                         isMatch = isPathMatched(location.pathname, path);
                         if (!isMatch) return [3 /*break*/, 4];
-                        if (status === ExtentedRouterStatus.SUCCESS && !initialLoading.current) {
+                        if (!initialLoading.current) {
                             setStatus(ExtentedRouterStatus.INITIAL);
                         }
                         return [4 /*yield*/, routerManager.checkGuards(location.pathname)];
@@ -268,6 +269,9 @@ var ExtendedRouter = function (_a) {
                 } }));
         }
         return (React.createElement(Route, { exact: exact, path: path, render: function (props) { return React.createElement(Component, __assign({}, props, routerManager.getProps(location.pathname))); } }));
+    }
+    if (status === ExtentedRouterStatus.FAIL && location.pathname !== innerRedirect && redirectUrl !== undefined) {
+        return React.createElement(Redirect, { to: innerRedirect });
     }
     return resultComponents[status];
 };
