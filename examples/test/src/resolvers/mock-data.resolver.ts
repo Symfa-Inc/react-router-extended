@@ -1,4 +1,4 @@
-import { Resolver, sleep } from '../../../src/reactRouterAdvance';
+import { Resolver, sleep } from '../../src/reactRouterAdvance';
 
 export class MockDataResolver implements Resolver {
   message: any;

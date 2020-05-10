@@ -74,18 +74,24 @@ var ExtentedRouterStatus;
 })(ExtentedRouterStatus || (ExtentedRouterStatus = {}));
 
 function useManager(_a) {
-    var resolvers = _a.resolvers, guards = _a.guards;
-    var componentProps = useRef({});
-    var allResolvers = useRef(resolvers);
-    var allGuards = useRef(guards);
-    function checkGuards() {
+    var resolvers = _a.resolvers, guards = _a.guards, pathname = _a.pathname;
+    var infoAboutComponent = useRef({});
+    if (!infoAboutComponent.current[pathname]) {
+        infoAboutComponent.current[pathname] = {
+            resolvers: resolvers,
+            guards: guards,
+            pathname: pathname,
+            props: {},
+        };
+    }
+    function checkGuards(pathname) {
         return __awaiter(this, void 0, void 0, function () {
             var result, _i, _a, guard, guardResult, e_1, isOk;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
                         result = [];
-                        _i = 0, _a = allGuards.current;
+                        _i = 0, _a = infoAboutComponent.current[pathname].guards;
                         _b.label = 1;
                     case 1:
                         if (!(_i < _a.length)) return [3 /*break*/, 6];
@@ -114,32 +120,36 @@ function useManager(_a) {
             });
         });
     }
-    function loadResolvers() {
+    function loadResolvers(pathname) {
         return __awaiter(this, void 0, void 0, function () {
-            var keys, promises, resultOfResolvers;
-            return __generator(this, function (_a) {
-                switch (_a.label) {
+            var keys, promises, resultOfResolvers, props;
+            var _a;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
                     case 0:
-                        keys = Object.keys(allResolvers.current).map(function (resolverKey) { return resolverKey; });
-                        promises = Object.keys(resolvers).map(function (resolverKey) { return resolvers[resolverKey].resolve(); });
+                        keys = Object.keys(infoAboutComponent.current[pathname].resolvers).map(function (resolverKey) { return resolverKey; });
+                        promises = Object.keys(infoAboutComponent.current[pathname].resolvers).map(function (resolverKey) {
+                            return infoAboutComponent.current[pathname].resolvers[resolverKey].resolve();
+                        });
                         return [4 /*yield*/, Promise.all(promises).catch(function (e) {
                                 console.error('Error in resolvers');
                                 console.error(e);
                             })];
                     case 1:
-                        resultOfResolvers = _a.sent();
-                        componentProps.current = resultOfResolvers.reduce(function (acc, next, index) {
+                        resultOfResolvers = _b.sent();
+                        props = resultOfResolvers.reduce(function (acc, next, index) {
                             var _a;
                             var key = keys[index];
                             return __assign(__assign({}, acc), (_a = {}, _a[key] = next, _a));
                         }, {});
+                        infoAboutComponent.current = __assign(__assign({}, infoAboutComponent.current), (_a = {}, _a[pathname] = __assign(__assign({}, infoAboutComponent.current[pathname]), { props: props }), _a));
                         return [2 /*return*/];
                 }
             });
         });
     }
-    function getProps() {
-        return componentProps.current;
+    function getProps(pathname) {
+        return infoAboutComponent.current[pathname].props;
     }
     return { loadResolvers: loadResolvers, getProps: getProps, checkGuards: checkGuards };
 }
@@ -202,7 +212,7 @@ var ExtendedRouter = function (_a) {
     if (typeof location === 'undefined') {
         throw new Error('Extended router must be wrapper in usual router!');
     }
-    var routerManager = useManager({ resolvers: resolvers, guards: guards });
+    var routerManager = useManager({ resolvers: resolvers, guards: guards, pathname: location.pathname });
     var _f = useState(ExtentedRouterStatus.INITIAL), status = _f[0], setStatus = _f[1];
     var initialLoading = useRef(true);
     var resultComponents = (_b = {},
@@ -221,11 +231,11 @@ var ExtendedRouter = function (_a) {
                         if (status === ExtentedRouterStatus.SUCCESS && !initialLoading.current) {
                             setStatus(ExtentedRouterStatus.INITIAL);
                         }
-                        return [4 /*yield*/, routerManager.checkGuards()];
+                        return [4 /*yield*/, routerManager.checkGuards(location.pathname)];
                     case 1:
                         guardStatus = _a.sent();
                         if (!(guardStatus === ExtentedRouterStatus.SUCCESS && Object.keys(resolvers).length)) return [3 /*break*/, 3];
-                        return [4 /*yield*/, routerManager.loadResolvers()];
+                        return [4 /*yield*/, routerManager.loadResolvers(location.pathname)];
                     case 2:
                         _a.sent();
                         _a.label = 3;
@@ -254,10 +264,10 @@ var ExtendedRouter = function (_a) {
                         props.history.push(childRedirectUrl);
                         return;
                     }
-                    return React.createElement(Component, __assign({}, props, { exact: exact, childRoutes: childRoutes_1 }, routerManager.getProps()));
+                    return (React.createElement(Component, __assign({}, props, { exact: exact, childRoutes: childRoutes_1 }, routerManager.getProps(location.pathname))));
                 } }));
         }
-        return React.createElement(Route, { exact: exact, path: path, render: function (props) { return React.createElement(Component, __assign({}, props, routerManager.getProps())); } });
+        return (React.createElement(Route, { exact: exact, path: path, render: function (props) { return React.createElement(Component, __assign({}, props, routerManager.getProps(location.pathname))); } }));
     }
     return resultComponents[status];
 };

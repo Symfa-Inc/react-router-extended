@@ -1,7 +1,7 @@
 import React from 'react';
 import { Switch, Router } from 'react-router-dom';
 
-import { ExtendedRouter } from '../../../src/reactRouterAdvance';
+import { ExtendedRouter } from '../../src/reactRouterAdvance';
 import { HomePage } from '../pages/home-page';
 import { IndependentPage } from '../pages/independent-page';
 import { TabPage } from '../pages/tab-page';
@@ -22,6 +22,13 @@ export const Routes = () => (
   <Router history={history}>
     <Switch>
       <ExtendedRouter path="/" exact={true} component={HomePage} />
+      <ExtendedRouter
+        path="/page-with-redirect"
+        guards={[new MockGuard(false)]}
+        redirectUrl="/"
+        exact={true}
+        component={HomePage}
+      />
       <ExtendedRouter exact={true} path="/independant-page" component={IndependentPage} />
       <ExtendedRouter
         path="/tab-page"

@@ -20,7 +20,7 @@ export const ExtendedRouter = ({
     throw new Error('Extended router must be wrapper in usual router!');
   }
 
-  const routerManager = useManager({ resolvers, guards });
+  const routerManager = useManager({ resolvers, guards, pathname: location.pathname });
   const [status, setStatus] = useState(ExtentedRouterStatus.INITIAL);
 
   const initialLoading = useRef(true);
@@ -40,13 +40,12 @@ export const ExtendedRouter = ({
           setStatus(ExtentedRouterStatus.INITIAL);
         }
 
-        const guardStatus = await routerManager.checkGuards();
-
+        const guardStatus = await routerManager.checkGuards(location.pathname);
         if (guardStatus === ExtentedRouterStatus.SUCCESS && Object.keys(resolvers).length) {
-          await routerManager.loadResolvers();
+          await routerManager.loadResolvers(location.pathname);
         }
-        setStatus(guardStatus);
 
+        setStatus(guardStatus);
         initialLoading.current = false;
       }
     })();
@@ -75,13 +74,26 @@ export const ExtendedRouter = ({
               return;
             }
 
-            return <Component {...props} exact={exact} childRoutes={childRoutes} {...routerManager.getProps()} />;
+            return (
+              <Component
+                {...props}
+                exact={exact}
+                childRoutes={childRoutes}
+                {...routerManager.getProps(location.pathname)}
+              />
+            );
           }}
         />
       );
     }
 
-    return <Route exact={exact} path={path} render={props => <Component {...props} {...routerManager.getProps()} />} />;
+    return (
+      <Route
+        exact={exact}
+        path={path}
+        render={props => <Component {...props} {...routerManager.getProps(location.pathname)} />}
+      />
+    );
   }
 
   return resultComponents[status];

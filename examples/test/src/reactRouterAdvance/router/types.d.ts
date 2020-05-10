@@ -1,7 +1,7 @@
 import { ElementType } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 export declare type RouterPath = string | string[] | undefined;
-export interface ExtendedRouterProps {
+export interface ExtendedRouterProps extends Partial<RouteComponentProps> {
     path: RouterPath;
     component: ElementType;
     redirectUrl?: string;
@@ -10,7 +10,6 @@ export interface ExtendedRouterProps {
     childs?: ExtendedRouterProps[];
     redirectToChild?: string | boolean;
     exact?: boolean;
-    location?: any;
 }
 export declare enum ExtentedRouterStatus {
     INITIAL = 0,
