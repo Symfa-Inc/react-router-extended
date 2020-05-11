@@ -17,6 +17,9 @@ import { MockDataResolver } from '../resolvers/mock-data.resolver';
 import { MockGuard } from '../guards/mock.guard';
 
 import { history } from './history';
+import { PageWithRedirectOnStaticChild } from '../pages/page-with-redirect-on-child';
+import { FirstTargetPage } from '../pages/page-with-redirect-on-child/first-target-page';
+import { DynamicTargetChild } from '../pages/page-with-redirect-on-dynamic-child/first-target-page';
 
 export const Routes = () => (
   <Router history={history}>
@@ -30,6 +33,36 @@ export const Routes = () => (
         component={HomePage}
       />
       <ExtendedRouter exact={true} path="/independant-page" component={IndependentPage} />
+      <ExtendedRouter
+        path="/page-with-redirect-on-static-child"
+        component={PageWithRedirectOnStaticChild}
+        redirectToChild="/page-with-redirect-on-static-child/static-child"
+        childs={[
+          {
+            component: FirstTargetPage,
+            path: '/page-with-redirect-on-static-child/static-child',
+          },
+          {
+            path: '/page-with-redirect-on-static-child/second-static-child',
+            component: SecondStaticChild,
+          },
+        ]}
+      />
+      <ExtendedRouter
+        path="/page-with-redirect-on-dynamic-child/:id"
+        component={PageWithRedirectOnStaticChild}
+        redirectToChild="/page-with-redirect-on-dynamic-child/:id/dynamic-child"
+        childs={[
+          {
+            component: DynamicTargetChild,
+            path: '/page-with-redirect-on-dynamic-child/:id/dynamic-child',
+          },
+          {
+            path: '/page-with-redirect-on-dynamic-child/:id/second-dynamic-child',
+            component: SecondStaticChild,
+          },
+        ]}
+      />
       <ExtendedRouter
         path="/tab-page"
         component={TabPage}

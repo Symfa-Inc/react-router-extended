@@ -260,10 +260,17 @@ var ExtendedRouter = function (_a) {
                 return (React.createElement(ExtendedRouter, __assign({}, route, { key: setKey(route.path), redirectUrl: route.redirectUrl, location: location })));
             });
             return (React.createElement(Route, { exact: exact, path: path, render: function (props) {
-                    if (childs.length && props.location.pathname === path && redirectToChild !== false) {
-                        var childRedirectUrl = redirectToChild || childs[0].path;
-                        props.history.push(childRedirectUrl);
-                        return;
+                    if (redirectToChild !== undefined && childs.length) {
+                        var lastIndex = redirectToChild.lastIndexOf('/');
+                        var onlyChildPath = redirectToChild.slice(lastIndex, redirectToChild.length);
+                        var parentPath = redirectToChild.split(onlyChildPath)[0];
+                        var pattern = new UrlPattern(parentPath);
+                        var match = pattern.match(location.pathname);
+                        var finalUrl = location.pathname + onlyChildPath;
+                        if (match && location.pathname !== finalUrl) {
+                            props.history.replace(finalUrl);
+                            return;
+                        }
                     }
                     return (React.createElement(Component, __assign({}, props, { exact: exact, childRoutes: childRoutes_1 }, routerManager.getProps(location.pathname))));
                 } }));

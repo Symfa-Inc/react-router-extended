@@ -8,7 +8,7 @@ export interface ExtendedRouterProps extends Partial<RouteComponentProps> {
     guards?: Guard[];
     resolvers?: PropsResolvers;
     childs?: ExtendedRouterProps[];
-    redirectToChild?: string | boolean;
+    redirectToChild?: string;
     exact?: boolean;
 }
 export declare enum ExtentedRouterStatus {

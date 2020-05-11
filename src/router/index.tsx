@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Redirect, Route } from 'react-router-dom';
 import { ExtendedRouterProps, ExtentedRouterStatus } from './types';
 import { useManager } from './hooks';
+import * as UrlPattern from 'url-pattern';
 
 import { isPathMatched, setKey, isChildPathStartWithParent } from './helpers';
 
@@ -68,10 +69,20 @@ export const ExtendedRouter = ({
           exact={exact}
           path={path}
           render={props => {
-            if (childs.length && props.location.pathname === path && redirectToChild !== false) {
-              const childRedirectUrl = redirectToChild || childs[0].path;
-              props.history.push(childRedirectUrl as string);
-              return;
+            if (redirectToChild !== undefined && childs.length) {
+              const lastIndex = redirectToChild.lastIndexOf('/');
+
+              const onlyChildPath = redirectToChild.slice(lastIndex, redirectToChild.length);
+              const parentPath = redirectToChild.split(onlyChildPath)[0];
+
+              const pattern = new UrlPattern(parentPath);
+              const match = pattern.match(location.pathname);
+              const finalUrl = location.pathname + onlyChildPath;
+
+              if (match && location.pathname !== finalUrl) {
+                props.history.replace(finalUrl);
+                return;
+              }
             }
 
             return (
