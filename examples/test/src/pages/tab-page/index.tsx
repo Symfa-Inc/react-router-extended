@@ -2,11 +2,14 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { ParentComponentWithChildRoutes } from '../../reactRouterAdvance';
 import { StyledDiv } from '../../components/styled-div';
+import { useState } from 'react';
 
 export const TabPage = ({ childRoutes }: ParentComponentWithChildRoutes) => {
+  const [time] = useState(Date.now());
   return (
     <StyledDiv>
       <h2 id="tab-page">Tab page</h2>
+      <p id="tab-time">{time}</p>
       <Link to="/">Link to home</Link>
       <br />
       <Link to="/tab-page/static-child">Link to static-child</Link>

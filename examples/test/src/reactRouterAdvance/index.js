@@ -170,26 +170,6 @@ var isMatch = function (basePath, path) {
     var isChildNestedRoute = pattern.match(basePath.slice(0, basePath.lastIndexOf('/')));
     return (match && match.isExact) || basePath.startsWith(path) || isChildNestedRoute;
 };
-var isChildPathStartWithParent = function (parentPath, childPath) {
-    checkIfPathIsUndefined(childPath);
-    checkIfPathIsUndefined(parentPath);
-    if (Array.isArray(childPath) && Array.isArray(parentPath)) {
-        return childPath.every(function (chPt) {
-            var isOneOfParentPathMatched = parentPath.some(function (pPt) { return isMatch(pPt, chPt); });
-            return isOneOfParentPathMatched;
-        });
-    }
-    else if (Array.isArray(parentPath) && !Array.isArray(childPath)) {
-        return parentPath.some(function (pt) { return isMatch(pt, childPath); });
-    }
-    else if (!Array.isArray(parentPath) && Array.isArray(childPath)) {
-        return childPath.every(function (chPt) {
-            var isOneOfParentPathMatched = isMatch(parentPath, chPt);
-            return isOneOfParentPathMatched;
-        });
-    }
-    return isMatch(parentPath, childPath);
-};
 var isPathMatched = function (basePath, path) {
     checkIfPathIsUndefined(path);
     if (Array.isArray(path)) {
@@ -207,20 +187,13 @@ var setKey = function (path) {
 };
 
 var ExtendedRouter = function (_a) {
-    var _b;
-    var path = _a.path, Component = _a.component, redirectUrl = _a.redirectUrl, _c = _a.guards, guards = _c === void 0 ? [] : _c, _d = _a.resolvers, resolvers = _d === void 0 ? {} : _d, _e = _a.childs, childs = _e === void 0 ? [] : _e, redirectToChild = _a.redirectToChild, exact = _a.exact, location = _a.location;
+    var path = _a.path, Component = _a.component, redirectUrl = _a.redirectUrl, _b = _a.guards, guards = _b === void 0 ? [] : _b, _c = _a.resolvers, resolvers = _c === void 0 ? {} : _c, _d = _a.childs, childs = _d === void 0 ? [] : _d, redirectToChild = _a.redirectToChild, exact = _a.exact, location = _a.location;
     if (typeof location === 'undefined') {
         throw new Error('Extended router must be wrapper in usual router!');
     }
     var innerRedirect = redirectUrl || '/';
     var routerManager = useManager({ resolvers: resolvers, guards: guards, pathname: location.pathname });
-    var _f = useState(ExtentedRouterStatus.INITIAL), status = _f[0], setStatus = _f[1];
-    var initialLoading = useRef(true);
-    var resultComponents = (_b = {},
-        _b[ExtentedRouterStatus.INITIAL] = null,
-        _b[ExtentedRouterStatus.SUCCESS] = null,
-        _b[ExtentedRouterStatus.FAIL] = null,
-        _b);
+    var _e = useState(ExtentedRouterStatus.INITIAL), status = _e[0], setStatus = _e[1];
     useEffect(function () {
         (function () { return __awaiter(void 0, void 0, void 0, function () {
             var isMatch, guardStatus;
@@ -229,9 +202,6 @@ var ExtendedRouter = function (_a) {
                     case 0:
                         isMatch = isPathMatched(location.pathname, path);
                         if (!isMatch) return [3 /*break*/, 4];
-                        if (!initialLoading.current) {
-                            setStatus(ExtentedRouterStatus.INITIAL);
-                        }
                         return [4 /*yield*/, routerManager.checkGuards(location.pathname)];
                     case 1:
                         guardStatus = _a.sent();
@@ -242,7 +212,6 @@ var ExtendedRouter = function (_a) {
                         _a.label = 3;
                     case 3:
                         setStatus(guardStatus);
-                        initialLoading.current = false;
                         _a.label = 4;
                     case 4: return [2 /*return*/];
                 }
@@ -250,16 +219,8 @@ var ExtendedRouter = function (_a) {
         }); })();
     }, [location.pathname]);
     if (status === ExtentedRouterStatus.SUCCESS) {
-        // If the status of the guards is passed
-        if (childs.length) {
-            var childRoutes_1 = childs.map(function (route) {
-                var isValidChildPath = isChildPathStartWithParent(route.path, path);
-                if (!isValidChildPath) {
-                    throw new Error("Child must start with parent path; Parent " + path + " Child " + route.path);
-                }
-                return (React.createElement(ExtendedRouter, __assign({}, route, { key: setKey(route.path), redirectUrl: route.redirectUrl, location: location })));
-            });
-            return (React.createElement(Route, { exact: exact, path: path, render: function (props) {
+        return (React.createElement(React.Fragment, null,
+            React.createElement(Route, { key: setKey(path), exact: exact, path: path, render: function (props) {
                     if (redirectToChild !== undefined && childs.length) {
                         var lastIndex = redirectToChild.lastIndexOf('/');
                         var onlyChildPath = redirectToChild.slice(lastIndex, redirectToChild.length);
@@ -272,15 +233,13 @@ var ExtendedRouter = function (_a) {
                             return;
                         }
                     }
-                    return (React.createElement(Component, __assign({}, props, { exact: exact, childRoutes: childRoutes_1 }, routerManager.getProps(location.pathname))));
-                } }));
-        }
-        return (React.createElement(Route, { exact: exact, path: path, render: function (props) { return React.createElement(Component, __assign({}, props, routerManager.getProps(location.pathname))); } }));
+                    return (React.createElement(Component, __assign({}, props, routerManager.getProps(location.pathname), { childRoutes: childs.map(function (route) { return (React.createElement(ExtendedRouter, __assign({}, route, { key: setKey(route.path), redirectUrl: route.redirectUrl, location: location }))); }) })));
+                } })));
     }
-    if (status === ExtentedRouterStatus.FAIL && location.pathname !== innerRedirect && redirectUrl !== undefined) {
+    if (status === ExtentedRouterStatus.FAIL) {
         return React.createElement(Redirect, { to: innerRedirect });
     }
-    return resultComponents[status];
+    return null;
 };
 
 export { ExtendedRouter, sleep };

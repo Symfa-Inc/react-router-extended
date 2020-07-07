@@ -1,6 +1,6 @@
 import { matchPath } from 'react-router-dom';
 import * as UrlPattern from 'url-pattern';
-import { ExtentedRouterStatus, Guard, RouterPath } from './types';
+import { ExtentedRouterStatus, Guard, RouterPath, ExtendedRouterProps } from './types';
 
 export const sleep = (t: number) => new Promise(res => setTimeout(() => res(), t));
 

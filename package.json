@@ -1,6 +1,6 @@
 {
   "name": "@wellyes/react-router-extended",
-  "version": "1.6.4",
+  "version": "1.7.4",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "keywords": [
@@ -54,7 +54,7 @@
     "dev:test": "concurrently --kill-others \"npm run build-watch\" \"npm run start:test\"",
     "test:lint": "eslint ./src/**/*.ts ./src/**/*.tsx ./examples/test/src/**/*.ts ./examples/test/src/**/*.ts",
     "test:lint:fix": "npm run test:lint -- --fix",
-    "cy:run": "cypress run --headless",
+    "cy:run": "cypress run",
     "test": "start-server-and-test start:test http://localhost:3000 cy:run"
   },
   "files": [
