@@ -21,9 +21,7 @@ export const ExtendedRouter = ({
     throw new Error('Extended router must be wrapper in usual router!');
   }
 
-  const innerRedirect = redirectUrl || '/';
-
-  const routerManager = useManager({ resolvers, guards, pathname: location.pathname });
+  const routerManager = useManager({ resolvers, guards, pathname: location.pathname, redirectUrl });
   const [status, setStatus] = useState(ExtentedRouterStatus.INITIAL);
 
   useEffect(() => {
@@ -82,7 +80,7 @@ export const ExtendedRouter = ({
   }
 
   if (status === ExtentedRouterStatus.FAIL) {
-    return <Redirect to={innerRedirect} />;
+    return <Redirect to={routerManager.getRedirectUrl()} />;
   }
 
   return null;

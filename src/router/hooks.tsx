@@ -5,12 +5,13 @@ interface UserManager {
   resolvers: PropsResolvers;
   guards: Guard[];
   pathname: string;
+  redirectUrl?: string;
 }
 interface InfoAboutComponent {
   [key: string]: UserManager & { props: any };
 }
 
-export function useManager({ resolvers, guards, pathname }: UserManager) {
+export function useManager({ resolvers, guards, pathname, redirectUrl }: UserManager) {
   const infoAboutComponent = useRef<InfoAboutComponent>({});
   if (!infoAboutComponent.current[pathname]) {
     infoAboutComponent.current[pathname] = {
@@ -18,24 +19,35 @@ export function useManager({ resolvers, guards, pathname }: UserManager) {
       guards,
       pathname,
       props: {},
+      redirectUrl
     };
   }
 
   async function checkGuards(pathname: string): Promise<ExtentedRouterStatus> {
-    const result = [];
+    const result: { isOk: boolean, redirectUrl?: string }[] = [];
     for (const guard of infoAboutComponent.current[pathname].guards) {
+      const hasFailInGuard = result.some(r => !r.isOk);
+      if (hasFailInGuard) {
+        continue;
+      }
       try {
         const guardResult = await guard.canActivate();
-        result.push(guardResult);
+        result.push({ isOk: guardResult, redirectUrl: guard.redirectUrl });
       } catch (e) {
-        result.push(false);
+        result.push({ isOk: false, redirectUrl: guard.redirectUrl });
         console.error('Error in guards');
         console.error(e);
       }
     }
-    const isOk = !result.some(i => !i);
+    const firstFailedGuard = result.find(r => !r.isOk);
+    if (firstFailedGuard && firstFailedGuard.redirectUrl) {
+      infoAboutComponent.current[pathname] = {
+        ...infoAboutComponent.current[pathname],
+        redirectUrl: firstFailedGuard.redirectUrl,
+      };
+    }
 
-    return isOk ? ExtentedRouterStatus.SUCCESS : ExtentedRouterStatus.FAIL;
+    return !firstFailedGuard ? ExtentedRouterStatus.SUCCESS : ExtentedRouterStatus.FAIL;
   }
 
   async function loadResolvers(pathname: string) {
@@ -65,5 +77,12 @@ export function useManager({ resolvers, guards, pathname }: UserManager) {
     return infoAboutComponent.current[pathname].props;
   }
 
-  return { loadResolvers, getProps, checkGuards };
+  function getRedirectUrl(): string {
+    if (infoAboutComponent.current[pathname].redirectUrl) {
+      return infoAboutComponent.current[pathname].redirectUrl as string;
+    }
+    return '/';
+  }
+
+  return { loadResolvers, getProps, checkGuards, getRedirectUrl };
 }

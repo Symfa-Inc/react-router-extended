@@ -21,6 +21,7 @@ export interface PropsResolvers {
 }
 export interface Guard {
     canActivate(): Promise<boolean> | boolean;
+    redirectUrl?: string;
 }
 export interface Resolver {
     resolve(): Promise<void> | void;

@@ -72,9 +72,10 @@ var ExtentedRouterStatus;
     ExtentedRouterStatus[ExtentedRouterStatus["SUCCESS"] = 1] = "SUCCESS";
     ExtentedRouterStatus[ExtentedRouterStatus["FAIL"] = 2] = "FAIL";
 })(ExtentedRouterStatus || (ExtentedRouterStatus = {}));
+//# sourceMappingURL=types.js.map
 
 function useManager(_a) {
-    var resolvers = _a.resolvers, guards = _a.guards, pathname = _a.pathname;
+    var resolvers = _a.resolvers, guards = _a.guards, pathname = _a.pathname, redirectUrl = _a.redirectUrl;
     var infoAboutComponent = useRef({});
     if (!infoAboutComponent.current[pathname]) {
         infoAboutComponent.current[pathname] = {
@@ -82,11 +83,12 @@ function useManager(_a) {
             guards: guards,
             pathname: pathname,
             props: {},
+            redirectUrl: redirectUrl
         };
     }
     function checkGuards(pathname) {
         return __awaiter(this, void 0, void 0, function () {
-            var result, _i, _a, guard, guardResult, e_1, isOk;
+            var result, _i, _a, guard, hasFailInGuard, guardResult, e_1, firstFailedGuard;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -96,17 +98,21 @@ function useManager(_a) {
                     case 1:
                         if (!(_i < _a.length)) return [3 /*break*/, 6];
                         guard = _a[_i];
+                        hasFailInGuard = result.some(function (r) { return !r.isOk; });
+                        if (hasFailInGuard) {
+                            return [3 /*break*/, 5];
+                        }
                         _b.label = 2;
                     case 2:
                         _b.trys.push([2, 4, , 5]);
                         return [4 /*yield*/, guard.canActivate()];
                     case 3:
                         guardResult = _b.sent();
-                        result.push(guardResult);
+                        result.push({ isOk: guardResult, redirectUrl: guard.redirectUrl });
                         return [3 /*break*/, 5];
                     case 4:
                         e_1 = _b.sent();
-                        result.push(false);
+                        result.push({ isOk: false, redirectUrl: guard.redirectUrl });
                         console.error('Error in guards');
                         console.error(e_1);
                         return [3 /*break*/, 5];
@@ -114,8 +120,11 @@ function useManager(_a) {
                         _i++;
                         return [3 /*break*/, 1];
                     case 6:
-                        isOk = !result.some(function (i) { return !i; });
-                        return [2 /*return*/, isOk ? ExtentedRouterStatus.SUCCESS : ExtentedRouterStatus.FAIL];
+                        firstFailedGuard = result.find(function (r) { return !r.isOk; });
+                        if (firstFailedGuard && firstFailedGuard.redirectUrl) {
+                            infoAboutComponent.current[pathname] = __assign(__assign({}, infoAboutComponent.current[pathname]), { redirectUrl: firstFailedGuard.redirectUrl });
+                        }
+                        return [2 /*return*/, !firstFailedGuard ? ExtentedRouterStatus.SUCCESS : ExtentedRouterStatus.FAIL];
                 }
             });
         });
@@ -151,8 +160,15 @@ function useManager(_a) {
     function getProps(pathname) {
         return infoAboutComponent.current[pathname].props;
     }
-    return { loadResolvers: loadResolvers, getProps: getProps, checkGuards: checkGuards };
+    function getRedirectUrl() {
+        if (infoAboutComponent.current[pathname].redirectUrl) {
+            return infoAboutComponent.current[pathname].redirectUrl;
+        }
+        return '/';
+    }
+    return { loadResolvers: loadResolvers, getProps: getProps, checkGuards: checkGuards, getRedirectUrl: getRedirectUrl };
 }
+//# sourceMappingURL=hooks.js.map
 
 var sleep = function (t) { return new Promise(function (res) { return setTimeout(function () { return res(); }, t); }); };
 var checkIfPathIsUndefined = function (path) {
@@ -185,14 +201,14 @@ var setKey = function (path) {
     }
     return path;
 };
+//# sourceMappingURL=helpers.js.map
 
 var ExtendedRouter = function (_a) {
     var path = _a.path, Component = _a.component, redirectUrl = _a.redirectUrl, _b = _a.guards, guards = _b === void 0 ? [] : _b, _c = _a.resolvers, resolvers = _c === void 0 ? {} : _c, _d = _a.childs, childs = _d === void 0 ? [] : _d, redirectToChild = _a.redirectToChild, exact = _a.exact, location = _a.location;
     if (typeof location === 'undefined') {
         throw new Error('Extended router must be wrapper in usual router!');
     }
-    var innerRedirect = redirectUrl || '/';
-    var routerManager = useManager({ resolvers: resolvers, guards: guards, pathname: location.pathname });
+    var routerManager = useManager({ resolvers: resolvers, guards: guards, pathname: location.pathname, redirectUrl: redirectUrl });
     var _e = useState(ExtentedRouterStatus.INITIAL), status = _e[0], setStatus = _e[1];
     useEffect(function () {
         (function () { return __awaiter(void 0, void 0, void 0, function () {
@@ -237,7 +253,7 @@ var ExtendedRouter = function (_a) {
                 } })));
     }
     if (status === ExtentedRouterStatus.FAIL) {
-        return React.createElement(Redirect, { to: innerRedirect });
+        return React.createElement(Redirect, { to: routerManager.getRedirectUrl() });
     }
     return null;
 };

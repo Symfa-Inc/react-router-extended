@@ -1,10 +1,7 @@
 import { Guard, sleep } from '../reactRouterAdvance';
 
 export class MockGuard implements Guard {
-  canActivateMoch: boolean;
-  constructor(canActivateMoch = true) {
-    this.canActivateMoch = canActivateMoch;
-  }
+  constructor(public canActivateMoch = true, public redirectUrl?: string) {}
   async canActivate(): Promise<boolean> {
     await sleep(200);
 
