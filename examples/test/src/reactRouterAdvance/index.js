@@ -72,7 +72,6 @@ var ExtentedRouterStatus;
     ExtentedRouterStatus[ExtentedRouterStatus["SUCCESS"] = 1] = "SUCCESS";
     ExtentedRouterStatus[ExtentedRouterStatus["FAIL"] = 2] = "FAIL";
 })(ExtentedRouterStatus || (ExtentedRouterStatus = {}));
-//# sourceMappingURL=types.js.map
 
 function useManager(_a) {
     var resolvers = _a.resolvers, guards = _a.guards, pathname = _a.pathname, redirectUrl = _a.redirectUrl;
@@ -168,7 +167,6 @@ function useManager(_a) {
     }
     return { loadResolvers: loadResolvers, getProps: getProps, checkGuards: checkGuards, getRedirectUrl: getRedirectUrl };
 }
-//# sourceMappingURL=hooks.js.map
 
 var sleep = function (t) { return new Promise(function (res) { return setTimeout(function () { return res(); }, t); }); };
 var checkIfPathIsUndefined = function (path) {
@@ -201,7 +199,6 @@ var setKey = function (path) {
     }
     return path;
 };
-//# sourceMappingURL=helpers.js.map
 
 var ExtendedRouter = function (_a) {
     var path = _a.path, Component = _a.component, redirectUrl = _a.redirectUrl, _b = _a.guards, guards = _b === void 0 ? [] : _b, _c = _a.resolvers, resolvers = _c === void 0 ? {} : _c, _d = _a.childs, childs = _d === void 0 ? [] : _d, redirectToChild = _a.redirectToChild, exact = _a.exact, location = _a.location;

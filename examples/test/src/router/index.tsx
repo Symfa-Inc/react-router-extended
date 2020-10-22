@@ -32,6 +32,13 @@ export const Routes = () => (
         exact={true}
         component={HomePage}
       />
+      <ExtendedRouter
+        path="/page-with-redirect-on-guard"
+        guards={[new MockGuard(false, '/guard-redirect-url')]}
+        redirectUrl="/"
+        exact={true}
+        component={HomePage}
+      />
       <ExtendedRouter exact={true} path="/independant-page" component={IndependentPage} />
       <ExtendedRouter
         path="/page-with-redirect-on-static-child"
