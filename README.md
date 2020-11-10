@@ -30,7 +30,8 @@ Let's imagine we have a page with 2 nested subpages/tabs.
 
 #### Example ####
 
-```<ExtendedRouter
+```js
+<ExtendedRouter
 	path="/page-with-tabs"
 	component={PageWithTabs}
 	childs={[
@@ -76,7 +77,8 @@ This is a class containing only one method `canActivate` that should return eith
 
 #### Example: ####
 
-```export class LoginGuard implements Guard {
+```js
+export class LoginGuard implements Guard {
   async canActivate() {
     const isLogin = await chechUserAuth();
     return isLogin;
@@ -86,7 +88,8 @@ This is a class containing only one method `canActivate` that should return eith
 
 and how we can use it
 
-```<ExtendedRouter
+```js
+<ExtendedRouter
 	path="/page-with-tabs"
 	component={PageWithTabs}
 	guards={[ new LoginGuard () ]},
@@ -106,7 +109,8 @@ Resolver is a class, which must have the `resolve` method and return data, which
 
 #### Example: ####
 
-```export class UserInfoResolver implements Resolver {
+```js
+export class UserInfoResolver implements Resolver {
   async resolve() {
     const userInfo = await getUserInfo();
     return userInfo ;
@@ -116,7 +120,8 @@ Resolver is a class, which must have the `resolve` method and return data, which
 
 and how we can use it
 
-```<ExtendedRouter
+```js
+<ExtendedRouter
 	path="/page-with-tabs"
 	component={PageWithTabs}
 	resolvers={{
@@ -129,7 +134,8 @@ React Router Extended has props with the name resolvers. It is an object with th
 
 The `PageWithTabs` component will not be rendered until the resolver has not finished its work.
 
-```function PageWithTabs({userInfo}) {
+```js
+function PageWithTabs({userInfo}) {
 	return (
 		<h2>
 			{userInfo.firstName}
