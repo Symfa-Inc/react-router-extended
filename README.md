@@ -1,20 +1,36 @@
-### Common info
+# General information #
+---------------------------------------------------------------------------------
+The main reason why we focused on this topic was the lack of solutions on how to make app routing easier while keeping it standardized. 
+In our case, we required certain child routes nested under a single and simplified standard. To understand which routes are assessable under the parent URL in a standard React Router, we needed to enter into the files. That caused pretty much inconvenience.
+We have created a library based on Angular router where we have borrowed the basic concept such as nested routes, guards, resolvers.
+This allowed us to solve 3 main issues, which are inherent to many react apps:
+* Child/nested routing
+* Route protection
+* Providing data for component pages
 
-The library must be used along with react-router-dom. Router, Switch, Link must be taken from react-router-dom, this library extends Route from react-router-dom.
-The library was made to resolve 3 main issues, which inherent many react apps.
+## Prerequisites ##
+-------------------------------------------------------------------------------------------------------------------------------
 
-- Child / nested routing
-- Route protection
-- Provides data for component pages
+This library extends `Route` from `react-router-dom`. 
+You need to take the router, switch, and link from it before using the library.
 
-## Child Routing
+## Installation ##
+--------------------------------------------------------------------------------------------------------------------------------
 
-Lets imagine, we have the page, in that page, nested 2 subpages/tabs
+Using npm
+`npm i @wellyes/react-router-extended`
 
-##### Example:
+Using yarn
+`yarn add @wellyes/react-router-extended`
 
-```
-<ExtendedRouter
+## Child/nested routing ##
+----------------------------------------------------------------------------------------------------------------------------------
+
+Let's imagine we have a page with 2 nested subpages/tabs.
+
+#### Example ####
+
+```<ExtendedRouter
 	path="/page-with-tabs"
 	component={PageWithTabs}
 	childs={[
@@ -41,31 +57,26 @@ function PageWithTabs({ childRoutes }) {
 }
 ```
 
-(The code for child components doesnt matter for that example)
+The code for child components is given as an example.
+The functionality of nested routing is implemented in the way that ExtendedRouter has props children that we can pass into its array. Then we should point out to React where it needs to render content. 
+For a parent component, ExtendedRouter provides an extra prop with the childRoutes name, and we just need to put it into the right place to have child routing done.
 
-ExtendedRouter has props **childs**, we can pass into it array of ExtendedRouter to have the functionality of nested routing!
+----------------------------------------------------------------------------------
+**Important note!** When child routes are re-rendered that doesn't trigger the re-rendering of a parent component. 
+**Important note!** Nesting of child routes is unlimited.
+---------------------------------------------------------------------------------
 
-Further, we need to point out to react, where he needs to render content. For component, which is a **parent**, ExtendedRouter provides extra prop with name childRoutes, and we just need to put our extra prop into the right place and child routing has done!
+## Route protection: Guard ##
+----------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
----
+Guard is used to protect the page from the user who does not have enough access rights or is not authorized. 
+It allows you to see at the 'very top' of the files which permissions you require to enter the page.
+This is a class containing only one method `canActivate` that should return either true when the user can enter the page or false when one doesn’t have access to enter the page. 
+`canActivate` can be asynchronous.
 
-**Important note.** When child routes are re-render that doesn't trigger the re-render parent component.
-**Important note.** Nesting child routes don't limited.
+#### Example: ####
 
----
-
-## Guard:
-
-Our application often needs to restrict the user from pages that are available by condition.
-
-Does user authenticated? Has user enough access?
-
-**Guard** it’s a class which must have method canActivate - it’s must return true if user allowed to hit the page and false if can't. The method can be async.
-
-##### Example:
-
-```
-export class LoginGuard implements Guard {
+```export class LoginGuard implements Guard {
   async canActivate() {
     const isLogin = await chechUserAuth();
     return isLogin;
@@ -73,10 +84,9 @@ export class LoginGuard implements Guard {
 }
 ```
 
-And how we can use it:
+and how we can use it
 
-```
-<ExtendedRouter
+```<ExtendedRouter
 	path="/page-with-tabs"
 	component={PageWithTabs}
 	guards={[ new LoginGuard () ]},
@@ -84,17 +94,19 @@ And how we can use it:
 />
 ```
 
-**ExtendedRouter** has prop guards it’s an array, which can be used with combining of guards. Guards are called consistently, from left to right, as they placed at an array. As soon as at least one guard returned false, the chain will be broken and stopped, and redirect will happen and we need to specify on which URL it will be it though prop **redirectUrl** as we did at the example above.
+React Router Extended has prop guards. They are array, which can be used with combining of guards. 
+Guards are called consistently, from left to right in the order they are placed in an array. 
+As soon as at least one guard returns false, the chain is broken and stopped, and redirect happens and we need to specify on which URL it will be it though prop `redirectUrl` as we did in the example above.
 
-##Resolver:
-Time to time, we need to preload data, before the show the UI, and the resolver purpose to facilitate us with it.
+## Providing data for component pages: Resolver ##
+------------------------------------------------------------------------------------
 
-**Resolver** - it’s a class, which must have method resolve, it must return data, which needs to be displayed at the component. Or we can just dispatch actions at it and if we need, we can wait for successful action in resolver!
+From time to time, we need to preload data, before showing the UI, and the purpose of the resolver is to facilitate us with it.
+Resolver is a class, which must have the `resolve` method and return data, which needs to be displayed by the component. Or we can just dispatch actions to it and if we need, we can wait for successful action in resolver.
 
-##### Example:
+#### Example: ####
 
-```
-export class UserInfoResolver implements Resolver {
+```export class UserInfoResolver implements Resolver {
   async resolve() {
     const userInfo = await getUserInfo();
     return userInfo ;
@@ -102,10 +114,9 @@ export class UserInfoResolver implements Resolver {
 }
 ```
 
-And how we can use it:
+and how we can use it
 
-```
-<ExtendedRouter
+```<ExtendedRouter
 	path="/page-with-tabs"
 	component={PageWithTabs}
 	resolvers={{
@@ -114,14 +125,11 @@ And how we can use it:
 />
 ```
 
-**ExtendedRouter** has props - resolvers, it’s an object, with key - the prop name in component and the value it must be the instance our’s resolver, in our case it’s a **new UserInfoResolver()**.
+React Router Extended has props with the name resolvers. It is an object with the key that is the prop name in the component and which value should be the instance of our resolver. In this case, it is a new `UserInfoResolver()`.
 
-The component **PageWithTabs** will not be rendered until, the resolver doesn't finish his work. And receiving data
+The `PageWithTabs` component will not be rendered until the resolver has not finished its work.
 
-And getting the information that the resolver returned to us in the component.
-
-```
-function PageWithTabs({userInfo}) {
+```function PageWithTabs({userInfo}) {
 	return (
 		<h2>
 			{userInfo.firstName}
@@ -130,6 +138,6 @@ function PageWithTabs({userInfo}) {
 }
 ```
 
-In component props from the resolver with the name that we specified in ExtendedRouter are passed into the component.
+In component props from the resolver with the name that we have specified in ExtendedRouter are passed to the component.
 
-More detailed example [link](https://gitlab.aisnovations.com/modules/react-router-extended/-/tree/master/examples%2Ftest 'link')
+For amore detailed example, follow the [link](https://gitlab.aisnovations.com/modules/react-router-extended/-/tree/master/examples%2Ftest).
