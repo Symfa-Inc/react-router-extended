@@ -1,6 +1,6 @@
 context('Routing', () => {
   beforeEach(() => {
-    cy.visit('http://localhost:3000/independant-page');
+    cy.visit('http://localhost:3000/independent-page');
   });
 
   describe('Independant-page', () => {

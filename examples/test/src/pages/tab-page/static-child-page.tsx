@@ -12,10 +12,10 @@ export const StaticChild = ({ mockUserData, mockUiData }: Props) => {
     <StyledDiv>
       <h2 id="static-child">Static-child</h2>
       <div>
-        <p id="name">{mockUserData.name}</p>
-        <p id="last-name">{mockUserData.lastName}</p>
+        {/*<p id="name">{mockUserData.name}</p>*/}
+        {/*<p id="last-name">{mockUserData.lastName}</p>*/}
       </div>
-      <div id="ui-data">{mockUiData.color}</div>
+      {/*<div id="ui-data">{mockUiData.color}</div>*/}
     </StyledDiv>
   );
 };

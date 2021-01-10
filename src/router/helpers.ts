@@ -1,6 +1,6 @@
 import { matchPath } from 'react-router-dom';
 import * as UrlPattern from 'url-pattern';
-import { ExtentedRouterStatus, Guard, RouterPath, ExtendedRouterProps } from './types';
+import { ExtentedRouterStatus, Guard, RouterPath } from './types';
 
 export const sleep = (t: number) => new Promise(res => setTimeout(() => res(), t));
 
@@ -67,7 +67,7 @@ export const isPathMatched = (basePath: string, path: RouterPath): boolean => {
   if (Array.isArray(path)) {
     const matchArray = path.map(pt => isMatch(basePath, pt));
 
-    return matchArray.some(match => match === true);
+    return matchArray.some(match => match);
   }
 
   return isMatch(basePath, path as string);

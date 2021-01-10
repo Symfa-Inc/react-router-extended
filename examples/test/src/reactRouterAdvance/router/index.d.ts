@@ -1,3 +1,8 @@
-/// <reference types="react" />
+import React, { FunctionComponent } from 'react';
 import { ExtendedRouterProps } from './types';
-export declare const ExtendedRouter: ({ path, component: Component, redirectUrl, guards, resolvers, childs, redirectToChild, exact, location, }: ExtendedRouterProps) => JSX.Element | null;
+export declare const RouteContext: React.Context<{
+    parentPath: string;
+    children: null;
+}>;
+export declare const ExtendedRouter: FunctionComponent<ExtendedRouterProps>;
+export declare const ChildRoutes: () => null;

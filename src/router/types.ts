@@ -1,10 +1,10 @@
-import { ElementType } from 'react';
+import { ComponentProps, ElementType } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 export type RouterPath = string | string[] | undefined;
 
-export interface ExtendedRouterProps extends Partial<RouteComponentProps> {
-  path: RouterPath;
+export interface ExtendedRouterProps {
+  path: string;
   component: ElementType;
   redirectUrl?: string;
   guards?: Guard[];
@@ -12,6 +12,9 @@ export interface ExtendedRouterProps extends Partial<RouteComponentProps> {
   childs?: ExtendedRouterProps[];
   redirectToChild?: string;
   exact?: boolean;
+  pageTitle?: string;
+  location?: Location;
+  children?: any;
 }
 
 export enum ExtentedRouterStatus {

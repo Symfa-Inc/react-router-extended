@@ -24,7 +24,7 @@ export function useManager({ resolvers, guards, pathname, redirectUrl }: UserMan
   }
 
   async function checkGuards(pathname: string): Promise<ExtentedRouterStatus> {
-    const result: { isOk: boolean, redirectUrl?: string }[] = [];
+    const result: { isOk: boolean; redirectUrl?: string }[] = [];
     for (const guard of infoAboutComponent.current[pathname].guards) {
       const hasFailInGuard = result.some(r => !r.isOk);
       if (hasFailInGuard) {
