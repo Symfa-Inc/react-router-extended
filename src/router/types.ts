@@ -18,7 +18,7 @@ export interface ExtendedRouterProps {
 }
 
 export enum ExtentedRouterStatus {
-  INITIAL,
+  INITIAL = 1,
   SUCCESS,
   FAIL,
 }

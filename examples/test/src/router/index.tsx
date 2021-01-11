@@ -25,6 +25,7 @@ export const Routes = () => (
   <Router history={history}>
     <Switch>
       <ExtendedRouter path="/" exact={true} component={HomePage}/>
+      <ExtendedRouter path="/ttwt" exact={true} component={HomePage}/>
       {/*<ExtendedRouter*/}
       {/*  path="/page-with-redirect"*/}
       {/*  guards={[new MockGuard(false)]}*/}
@@ -74,6 +75,7 @@ export const Routes = () => (
         path="/tab-page"
         pageTitle="Tab page title"
         component={TabPage}
+        guards={[new MockGuard(true)]}
         // childs={[
         //   {
         //     component: StaticChild,
@@ -109,7 +111,7 @@ export const Routes = () => (
         //   },
         // ]}
       >
-        <ExtendedRouter component={StaticChild} path={'/tab-page/static-child'}></ExtendedRouter>
+        <ExtendedRouter component={StaticChild} path={'/tab-page/static-child'} />
       </ExtendedRouter>
     </Switch>
   </Router>

@@ -8,6 +8,7 @@ interface Props {
 }
 
 export const StaticChild = ({ mockUserData, mockUiData }: Props) => {
+  console.log('CHILD!');
   return (
     <StyledDiv>
       <h2 id="static-child">Static-child</h2>

@@ -15,9 +15,9 @@ export interface ExtendedRouterProps {
     children?: any;
 }
 export declare enum ExtentedRouterStatus {
-    INITIAL = 0,
-    SUCCESS = 1,
-    FAIL = 2
+    INITIAL = 1,
+    SUCCESS = 2,
+    FAIL = 3
 }
 export interface PropsResolvers {
     [index: string]: Resolver;

@@ -1,8 +1,17 @@
 import React, { FunctionComponent } from 'react';
-import { ExtendedRouterProps } from './types';
+import { ExtendedRouterProps, ExtentedRouterStatus } from './types';
+declare class ParentRoute {
+    private parentRoute;
+    constructor(parentRoute: string);
+    get path(): string;
+}
 export declare const RouteContext: React.Context<{
-    parentPath: string;
-    children: null;
+    parent: ParentRoute;
+    guardStatus: ExtentedRouterStatus;
+    outlet: null;
+    routeData: {};
 }>;
 export declare const ExtendedRouter: FunctionComponent<ExtendedRouterProps>;
 export declare const ChildRoutes: () => null;
+export declare const useResolver: () => {};
+export {};
