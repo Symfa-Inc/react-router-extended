@@ -15,6 +15,7 @@ export interface ExtendedRouterProps {
     children?: any;
     setResolverInfo?: any;
     setGuardStatus?: any;
+    status?: ExtentedRouterStatus;
 }
 export declare enum ExtentedRouterStatus {
     INITIAL = 1,

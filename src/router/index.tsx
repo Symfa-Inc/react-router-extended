@@ -16,7 +16,7 @@ class ParentRoute {
 
 export const RouteContext = React.createContext({
   parent: new ParentRoute(''),
-  guardStatus: ExtentedRouterStatus.INITIAL,
+  // guardStatus: ExtentedRouterStatus.INITIAL,
   outlet: null,
   routeData: {},
 });
@@ -103,48 +103,68 @@ export const ExtendedRouter: FunctionComponent<ExtendedRouterProps> = (props) =>
   //   console.log('RENDER' + path);
   const [resolverInfo, setResolverInfo] = useState({});
   const [status, setGuardStatus] = useState<ExtentedRouterStatus>(ExtentedRouterStatus.INITIAL);
-  const location = useLocation();
+  // const location = useLocation();
 
   useEffect(() => {
-    const isComponentPathMatched = isPathTheSame(location.pathname, props.path);
-    if (isComponentPathMatched) {
+    // const isExactPath = isPathTheSame(location.pathname, props.path);
+    // if (isComponentPathMatched) {
       // if() {
       // console.log(`Stored path: ${storedPath} currentPath: ${path}`);
       // let currentRouteStatus = status;
       // console.log('PATH', path, 'stored' + storedPath);
-      const isNotOldCachedResult = status === ExtentedRouterStatus.SUCCESS;
+      // const isNotOldCachedResult = status === ExtentedRouterStatus.SUCCESS;
       // const isDirectRouteAndGuardAlreadyWorked =
       //   status === ExtentedRouterStatus.SUCCESS && storedPath !== '' && isPathTheSame(location.pathname, storedPath);
       // const hasGuardOrResolvers = props.resolvers !== undefined && !props.guards?.length && Object.values(props.resolvers).length !== 0;
-      if (
-        isNotOldCachedResult &&
-        ((props.resolvers !== undefined && Object.values(props.resolvers).length !== 0) || props.guards?.length)
-      ) {
-        // status = ExtentedRouterStatus.INITIAL;
-        // console.log('INITIAL STATUS WAS SETTED', props.path);
-        setGuardStatus(ExtentedRouterStatus.INITIAL);
-      }
+      // if (
+      //   isNotOldCachedResult && isExactPath &&
+      //   ((props.resolvers !== undefined && Object.values(props.resolvers).length !== 0) || props.guards?.length)
+      // ) {
+      //   // status = ExtentedRouterStatus.INITIAL;
+      //   // console.log('INITIAL STATUS WAS SETTED', props.path);
+      //   setGuardStatus(ExtentedRouterStatus.INITIAL);
+      // }
+    // const isExactPath = isPathTheSame(location.pathname, props.path);
+    // if (
+    //   status === ExtentedRouterStatus.SUCCESS && isExactPath &&
+    //   ((props.resolvers !== undefined && Object.values(props.resolvers).length !== 0) || props.guards?.length)
+    // ) {
+    //   // status = ExtentedRouterStatus.INITIAL;
+    //   // console.log('INITIAL STATUS WAS SETTED', props.path);
+    //   setGuardStatus(ExtentedRouterStatus.INITIAL);
+    // }
       if (props.resolvers !== undefined && !props.guards?.length && Object.values(props.resolvers).length === 0) {
         // console.log('!guards?.length && !Object.values(resolvers).length)', props.path);
         setGuardStatus(ExtentedRouterStatus.SUCCESS);
 
       }
-    }
+    // }
 
   }, [location.pathname]);
   return (
-    <RouteContext.Provider value={{
-      parent: new ParentRoute(props.path),
-      outlet: props.children,
-      routeData: resolverInfo,
-      guardStatus: status,
-    }}>
-      <RouteContext.Consumer>
-        {() => (
-          <InnerExtendedRouter {...props} setResolverInfo={setResolverInfo} setGuardStatus={setGuardStatus}/>
-        )}
-      </RouteContext.Consumer>
-    </RouteContext.Provider>
+    <Route
+      key={setKey(props.path)}
+      exact={props.exact}
+      path={props.path}
+      render={() => <RouteContext.Provider value={{
+        parent: new ParentRoute(props.path),
+        outlet: props.children,
+        routeData: resolverInfo,
+        // guardStatus: status,
+      }}>
+        <RouteContext.Consumer>
+          {() => (
+            <InnerExtendedRouter
+              {...props}
+              setResolverInfo={setResolverInfo}
+              setGuardStatus={setGuardStatus}
+              status={status}
+            />
+          )}
+        </RouteContext.Consumer>
+      </RouteContext.Provider>}>
+    </Route>
+
   );
   // }
   // ;
@@ -164,12 +184,13 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
                                                                        resolvers = {},
                                                                        // childs = [],
                                                                        // redirectToChild,
-                                                                       exact,
+                                                                       // exact,
                                                                        // location,
                                                                        // children,
 
                                                                        setResolverInfo,
                                                                        setGuardStatus,
+                                                                       status,
                                                                        // pageTitle,
                                                                      }) => {
   const location = useLocation();
@@ -177,14 +198,14 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
 
   const routerManager = useManager({ resolvers, guards, pathname: location.pathname, redirectUrl });
   // const [status, setStatus] = useState(context.guardStatus);
-  const [storedPath, storePath] = useState<string>(path);
+  // const [storedPath, storePath] = useState<string>(path);
   // const [lastUpdateTime, forceUpdate] = useState(Date.now());
 
   // console.log('INITIAL STATUS', status, path);
 
   const setStatusAndPath = (status: ExtentedRouterStatus) => {
     setGuardStatus(status);
-    storePath(path);
+    // storePath(path);
   };
 
   // const [resolverInfo, setResolverInfo] = useState({});
@@ -207,8 +228,8 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
   //
   useEffect(() => {
     (async () => {
-      const isComponentPathMatched = isPathMatched(location.pathname, path);
-      if (isComponentPathMatched) {
+      // const isComponentPathMatched = isPathTheSame(location.pathname, path) || true;
+      // if (isComponentPathMatched) {
         //   console.log(`Stored path: ${storedPath} currentPath: ${path}`);
         // let currentRouteStatus = context.guardStatus;
         //   // console.log('PATH', path, 'stored' + storedPath);
@@ -224,7 +245,28 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
         //     // console.log('!guards?.length && !Object.values(resolvers).length)', path);
         //     setStatusAndPath(ExtentedRouterStatus.SUCCESS);
         //   }
-        const needToLoadExtraInfoForComponent = isComponentPathMatched && context.guardStatus === ExtentedRouterStatus.INITIAL;
+      // const isExactPath = isPathTheSame(location.pathname, path);
+      // if (
+      //   status === ExtentedRouterStatus.SUCCESS && isExactPath &&
+      //   ((resolvers !== undefined && Object.values(resolvers).length !== 0) || guards?.length)
+      // ) {
+      //   // status = ExtentedRouterStatus.INITIAL;
+      //   // console.log('INITIAL STATUS WAS SETTED', props.path);
+      //   // setGuardStatus(ExtentedRouterStatus.INITIAL);
+      // }
+      const isExactPath = isPathTheSame(location.pathname, path);
+      let routeStatus = status;
+      if (
+        status === ExtentedRouterStatus.SUCCESS && isExactPath &&
+        ((resolvers !== undefined && Object.values(resolvers).length !== 0) || guards?.length)
+      ) {
+        routeStatus = ExtentedRouterStatus.INITIAL;
+        // console.log('INITIAL STATUS WAS SETTED', props.path);
+        setGuardStatus(ExtentedRouterStatus.INITIAL);
+      }
+      console.log(`INIT: ${path}`);
+        const needToLoadExtraInfoForComponent = routeStatus === ExtentedRouterStatus.INITIAL;
+        console.log(`status: ${status} path: ${path}`);
         if (needToLoadExtraInfoForComponent) {
           // console.log('CHECKING GUARDS', path);
           const guardStatus = await routerManager.checkGuards(location.pathname);
@@ -241,18 +283,21 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
           }
           setStatusAndPath(guardStatus);
         }
-      }
+      // }
 
 
     })();
-  }, [location.pathname, context.guardStatus]);
+  }, []);
+
+  console.log(`Status: ${status} path: ${path}`);
   // useEffect(() => {
   //   console.log(path);
   // }, []);
 
-  if ([context.guardStatus].includes(ExtentedRouterStatus.SUCCESS)) {
-    // console.log('RENDER' + path);
+  if ([status].includes(ExtentedRouterStatus.SUCCESS)) {
+    console.log('RENDER' + path);
     return (
+      <Component></Component>
       // <RouteContext.Provider value={{
       //   parent: new ParentRoute(path),
       //   outlet: children,
@@ -261,20 +306,20 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
       // }}>
       //   <RouteContext.Consumer>
       //     {() => (
-      <Route
-        key={setKey(path)}
-        exact={exact}
-        path={path}
-        render={() => <Component></Component>}>
-      </Route>
+      // <Route
+      //   key={setKey(path)}
+      //   exact={exact}
+      //   path={path}
+      //   render={() => <Component></Component>}>
+      // </Route>
       //     )}
       //   </RouteContext.Consumer>
       // </RouteContext.Provider>
     );
   }
 
-  if (context.guardStatus === ExtentedRouterStatus.FAIL) {
-    return <Redirect to={routerManager.getRedirectUrl()}/>;
+  if (status === ExtentedRouterStatus.FAIL) {
+    return <Redirect to={routerManager.getRedirectUrl() }/>;
   }
 
   return null;
@@ -283,7 +328,7 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
 export const ChildRoutes = () => {
   const context = React.useContext(RouteContext);
   const location = useLocation();
-  if (context.parent.path !== location.pathname && context.guardStatus === ExtentedRouterStatus.SUCCESS) {
+  if (context.parent.path !== location.pathname) {
     return context.outlet;
   }
   return null;

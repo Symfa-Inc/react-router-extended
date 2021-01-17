@@ -1,5 +1,5 @@
 import React, { FunctionComponent } from 'react';
-import { ExtendedRouterProps, ExtentedRouterStatus } from './types';
+import { ExtendedRouterProps } from './types';
 declare class ParentRoute {
     private parentRoute;
     constructor(parentRoute: string);
@@ -7,7 +7,6 @@ declare class ParentRoute {
 }
 export declare const RouteContext: React.Context<{
     parent: ParentRoute;
-    guardStatus: ExtentedRouterStatus;
     outlet: null;
     routeData: {};
 }>;
