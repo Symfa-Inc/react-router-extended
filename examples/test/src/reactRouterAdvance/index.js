@@ -258,22 +258,24 @@ var ExtendedRouter = function (_a) {
     //
     useEffect(function () {
         (function () { return __awaiter(void 0, void 0, void 0, function () {
-            var isComponentPathMatched, currentRouteStatus, needToCheckGuards, guardStatus;
+            var isComponentPathMatched, currentRouteStatus, isGuard, isDirectRouteAndGuardAlreadyWorked, needToCheckGuards, guardStatus;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
                         isComponentPathMatched = isPathMatched(location.pathname, path);
-                        // setStatus(ExtentedRouterStatus.INITIAL);
-                        // forceUpdate(true);
-                        console.log(context.guardStatus);
                         currentRouteStatus = status;
-                        if (status === ExtentedRouterStatus.SUCCESS && storedPath !== path && storedPath !== '') {
+                        isGuard = status === ExtentedRouterStatus.SUCCESS && storedPath !== path && storedPath !== '';
+                        isDirectRouteAndGuardAlreadyWorked = status === ExtentedRouterStatus.SUCCESS && storedPath === location.pathname && storedPath !== '';
+                        if ((isGuard || isDirectRouteAndGuardAlreadyWorked) && (guards === null || guards === void 0 ? void 0 : guards.length)) {
                             currentRouteStatus = ExtentedRouterStatus.INITIAL;
                             setStatusAndPath(ExtentedRouterStatus.INITIAL);
                         }
+                        if (!(guards === null || guards === void 0 ? void 0 : guards.length)) {
+                            setStatusAndPath(ExtentedRouterStatus.SUCCESS);
+                        }
                         needToCheckGuards = isComponentPathMatched && currentRouteStatus === ExtentedRouterStatus.INITIAL;
-                        if (!needToCheckGuards) return [3 /*break*/, 4];
-                        console.log('needToCheckGuards', path);
+                        if (!(needToCheckGuards && (guards === null || guards === void 0 ? void 0 : guards.length))) return [3 /*break*/, 4];
+                        console.log('CHECKING GUARDS', path);
                         return [4 /*yield*/, routerManager.checkGuards(location.pathname)];
                     case 1:
                         guardStatus = _a.sent();
@@ -285,7 +287,6 @@ var ExtendedRouter = function (_a) {
                         context.routeData = routerManager.getProps(location.pathname);
                         _a.label = 3;
                     case 3:
-                        console.log('SET', path, guardStatus);
                         setStatusAndPath(guardStatus);
                         _a.label = 4;
                     case 4: return [2 /*return*/];

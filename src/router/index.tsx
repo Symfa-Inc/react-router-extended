@@ -68,17 +68,20 @@ export const ExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
   useEffect(() => {
     (async () => {
       const isComponentPathMatched = isPathMatched(location.pathname, path);
-      // setStatus(ExtentedRouterStatus.INITIAL);
-      // forceUpdate(true);
-      console.log(context.guardStatus);
       let currentRouteStatus = status;
-      if (status === ExtentedRouterStatus.SUCCESS && storedPath !== path && storedPath !== '') {
+      const isGuard = status === ExtentedRouterStatus.SUCCESS && storedPath !== path && storedPath !== '';
+      const isDirectRouteAndGuardAlreadyWorked =
+        status === ExtentedRouterStatus.SUCCESS && storedPath === location.pathname && storedPath !== ''; // TODO: Add smart route check with params
+      if ((isGuard || isDirectRouteAndGuardAlreadyWorked) && guards?.length) {
         currentRouteStatus = ExtentedRouterStatus.INITIAL;
         setStatusAndPath(ExtentedRouterStatus.INITIAL);
       }
+      if (!guards?.length) {
+        setStatusAndPath(ExtentedRouterStatus.SUCCESS);
+      }
       const needToCheckGuards = isComponentPathMatched && currentRouteStatus === ExtentedRouterStatus.INITIAL;
-      if (needToCheckGuards) {
-        console.log('needToCheckGuards', path);
+      if (needToCheckGuards && guards?.length) {
+        console.log('CHECKING GUARDS', path);
         const guardStatus = await routerManager.checkGuards(location.pathname);
         if (guardStatus === ExtentedRouterStatus.SUCCESS) {
           // console.log(path);
@@ -91,9 +94,9 @@ export const ExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
             context.routeData = routerManager.getProps(location.pathname);
           }
         }
-        console.log('SET', path, guardStatus);
         setStatusAndPath(guardStatus);
       }
+
     })();
   }, [location.pathname]);
   // useEffect(() => {
