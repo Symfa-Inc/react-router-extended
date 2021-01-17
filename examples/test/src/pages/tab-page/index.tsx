@@ -7,7 +7,7 @@ import { ChildRoutes } from '../../reactRouterAdvance/index';
 
 export const TabPage = ({ childRoutes }: ParentComponentWithChildRoutes) => {
   const [time] = useState(Date.now());
-  console.log('PARENT!');
+  console.log('TAB PAGE RENDERED!');
   return (
     <StyledDiv>
       <h2 id="tab-page">Tab page</h2>

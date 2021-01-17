@@ -81,3 +81,15 @@ export const setKey = (path: RouterPath): string => {
   }
   return path as string;
 };
+
+
+export const isPathTheSame = (currentLocationPath: string, componentPath: string): boolean => {
+  const pattern = new UrlPattern(componentPath);
+  return pattern.match(currentLocationPath) !== null;
+  // const isMultiPath = componentPath.includes('/');
+  // const isPathWithParams = componentPath;
+  // if (isMultiPath) {
+  //
+  // }
+  // return false;
+};

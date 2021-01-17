@@ -15,6 +15,8 @@ export interface ExtendedRouterProps {
   pageTitle?: string;
   location?: Location;
   children?: any;
+  setResolverInfo?: any;
+  setGuardStatus?: any;
 }
 
 export enum ExtentedRouterStatus {

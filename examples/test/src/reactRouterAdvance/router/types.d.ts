@@ -13,6 +13,8 @@ export interface ExtendedRouterProps {
     pageTitle?: string;
     location?: Location;
     children?: any;
+    setResolverInfo?: any;
+    setGuardStatus?: any;
 }
 export declare enum ExtentedRouterStatus {
     INITIAL = 1,

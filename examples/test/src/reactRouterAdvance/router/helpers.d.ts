@@ -4,3 +4,4 @@ export declare const checkGuards: (guards: Guard[]) => Promise<ExtentedRouterSta
 export declare const isChildPathStartWithParent: (parentPath: RouterPath, childPath: RouterPath) => boolean;
 export declare const isPathMatched: (basePath: string, path: RouterPath) => boolean;
 export declare const setKey: (path: RouterPath) => string;
+export declare const isPathTheSame: (currentLocationPath: string, componentPath: string) => boolean;

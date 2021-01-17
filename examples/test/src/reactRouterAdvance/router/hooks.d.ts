@@ -1,4 +1,4 @@
-import { PropsResolvers, Guard, ExtentedRouterStatus } from './types';
+import { ExtentedRouterStatus, Guard, PropsResolvers } from './types';
 interface UserManager {
     resolvers: PropsResolvers;
     guards: Guard[];
@@ -6,8 +6,7 @@ interface UserManager {
     redirectUrl?: string;
 }
 export declare function useManager({ resolvers, guards, pathname, redirectUrl }: UserManager): {
-    loadResolvers: (pathname: string) => Promise<void>;
-    getProps: (pathname: string) => any;
+    loadResolvers: () => Promise<{}>;
     checkGuards: (pathname: string) => Promise<ExtentedRouterStatus>;
     getRedirectUrl: () => string;
 };

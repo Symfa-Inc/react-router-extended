@@ -111,7 +111,11 @@ export const Routes = () => (
         //   },
         // ]}
       >
-        <ExtendedRouter component={StaticChild} path={'/tab-page/static-child'} />
+        <ExtendedRouter component={StaticChild} path={'/tab-page/static-child'}/>
+        <ExtendedRouter component={SecondStaticChild} path={'/tab-page/second-static-child'}      guards={[new MockGuard(true)]}  resolvers={{
+          mockUserData: new MockDataResolver({ name: 'Joy', lastName: 'Doy' }),
+          mockUiData: new MockDataResolver({ color: 'blue' }),
+        }}/>
       </ExtendedRouter>
     </Switch>
   </Router>

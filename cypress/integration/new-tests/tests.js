@@ -7,3 +7,7 @@
 // Guard allows user to enter route
 // Guard for the direct route must be checked every time
 // Parent guard must be checked once
+
+// Resolver load info
+// Resolver for the direct route must be checked every time
+// Parent resolver must be checked once

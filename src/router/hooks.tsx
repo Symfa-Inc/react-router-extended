@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { PropsResolvers, Guard, ExtentedRouterStatus } from './types';
+import { ExtentedRouterStatus, Guard, PropsResolvers } from './types';
 
 interface UserManager {
   resolvers: PropsResolvers;
@@ -50,32 +50,32 @@ export function useManager({ resolvers, guards, pathname, redirectUrl }: UserMan
     return !firstFailedGuard ? ExtentedRouterStatus.SUCCESS : ExtentedRouterStatus.FAIL;
   }
 
-  async function loadResolvers(pathname: string) {
-    const keys = Object.keys(infoAboutComponent.current[pathname].resolvers).map(resolverKey => resolverKey);
-    const promises = Object.keys(infoAboutComponent.current[pathname].resolvers).map(resolverKey =>
-      infoAboutComponent.current[pathname].resolvers[resolverKey].resolve(),
+  async function loadResolvers() {
+    const keys = Object.keys(resolvers).map(resolverKey => resolverKey);
+    const promises = Object.keys(resolvers).map(resolverKey =>
+      resolvers[resolverKey].resolve(),
     );
     const resultOfResolvers = await Promise.all(promises).catch(e => {
       console.error('Error in resolvers');
       console.error(e);
     });
-    const props = (resultOfResolvers as []).reduce((acc, next, index) => {
+    return (resultOfResolvers as []).reduce((acc, next, index) => {
       const key = keys[index];
       return { ...acc, [key]: next };
     }, {});
 
-    infoAboutComponent.current = {
-      ...infoAboutComponent.current,
-      [pathname]: {
-        ...infoAboutComponent.current[pathname],
-        props,
-      },
-    };
+    // infoAboutComponent.current = {
+    //   ...infoAboutComponent.current,
+    //   [pathname]: {
+    //     ...infoAboutComponent.current[pathname],
+    //     props,
+    //   },
+    // };
   }
 
-  function getProps(pathname: string) {
-    return infoAboutComponent.current[pathname].props;
-  }
+  // function getProps(pathname: string) {
+  //   return infoAboutComponent.current[pathname].props;
+  // }
 
   function getRedirectUrl(): string {
     if (infoAboutComponent.current[pathname].redirectUrl) {
@@ -84,5 +84,5 @@ export function useManager({ resolvers, guards, pathname, redirectUrl }: UserMan
     return '/';
   }
 
-  return { loadResolvers, getProps, checkGuards, getRedirectUrl };
+  return { loadResolvers, checkGuards, getRedirectUrl };
 }

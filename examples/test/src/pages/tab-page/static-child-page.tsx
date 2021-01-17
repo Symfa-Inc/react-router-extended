@@ -7,7 +7,7 @@ interface Props {
   mockUserData: MockUserData;
 }
 
-export const StaticChild = ({ mockUserData, mockUiData }: Props) => {
+export const StaticChild = () => {
   console.log('CHILD!');
   return (
     <StyledDiv>
