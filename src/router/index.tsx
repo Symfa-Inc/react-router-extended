@@ -1,9 +1,11 @@
-import React, { FunctionComponent, useEffect, useState } from 'react';
+import React, { FunctionComponent, useEffect, useMemo, useRef, useState } from 'react';
 import { Redirect, Route, useLocation } from 'react-router-dom';
 
 import { isPathMatched, isPathTheSame, setKey } from './helpers';
 import { useManager } from './hooks';
 import { ExtendedRouterProps, ExtentedRouterStatus } from './types';
+
+const isNullOrUndefined = (value: any) : boolean => value === null || value === undefined;
 
 class ParentRoute {
   constructor(private parentRoute: string) {
@@ -108,22 +110,22 @@ export const ExtendedRouter: FunctionComponent<ExtendedRouterProps> = (props) =>
   useEffect(() => {
     // const isExactPath = isPathTheSame(location.pathname, props.path);
     // if (isComponentPathMatched) {
-      // if() {
-      // console.log(`Stored path: ${storedPath} currentPath: ${path}`);
-      // let currentRouteStatus = status;
-      // console.log('PATH', path, 'stored' + storedPath);
-      // const isNotOldCachedResult = status === ExtentedRouterStatus.SUCCESS;
-      // const isDirectRouteAndGuardAlreadyWorked =
-      //   status === ExtentedRouterStatus.SUCCESS && storedPath !== '' && isPathTheSame(location.pathname, storedPath);
-      // const hasGuardOrResolvers = props.resolvers !== undefined && !props.guards?.length && Object.values(props.resolvers).length !== 0;
-      // if (
-      //   isNotOldCachedResult && isExactPath &&
-      //   ((props.resolvers !== undefined && Object.values(props.resolvers).length !== 0) || props.guards?.length)
-      // ) {
-      //   // status = ExtentedRouterStatus.INITIAL;
-      //   // console.log('INITIAL STATUS WAS SETTED', props.path);
-      //   setGuardStatus(ExtentedRouterStatus.INITIAL);
-      // }
+    // if() {
+    // console.log(`Stored path: ${storedPath} currentPath: ${path}`);
+    // let currentRouteStatus = status;
+    // console.log('PATH', path, 'stored' + storedPath);
+    // const isNotOldCachedResult = status === ExtentedRouterStatus.SUCCESS;
+    // const isDirectRouteAndGuardAlreadyWorked =
+    //   status === ExtentedRouterStatus.SUCCESS && storedPath !== '' && isPathTheSame(location.pathname, storedPath);
+    // const hasGuardOrResolvers = props.resolvers !== undefined && !props.guards?.length && Object.values(props.resolvers).length !== 0;
+    // if (
+    //   isNotOldCachedResult && isExactPath &&
+    //   ((props.resolvers !== undefined && Object.values(props.resolvers).length !== 0) || props.guards?.length)
+    // ) {
+    //   // status = ExtentedRouterStatus.INITIAL;
+    //   // console.log('INITIAL STATUS WAS SETTED', props.path);
+    //   setGuardStatus(ExtentedRouterStatus.INITIAL);
+    // }
     // const isExactPath = isPathTheSame(location.pathname, props.path);
     // if (
     //   status === ExtentedRouterStatus.SUCCESS && isExactPath &&
@@ -133,11 +135,11 @@ export const ExtendedRouter: FunctionComponent<ExtendedRouterProps> = (props) =>
     //   // console.log('INITIAL STATUS WAS SETTED', props.path);
     //   setGuardStatus(ExtentedRouterStatus.INITIAL);
     // }
-      if (props.resolvers !== undefined && !props.guards?.length && Object.values(props.resolvers).length === 0) {
-        // console.log('!guards?.length && !Object.values(resolvers).length)', props.path);
-        setGuardStatus(ExtentedRouterStatus.SUCCESS);
+    if (props.resolvers !== undefined && !props.guards?.length && Object.values(props.resolvers).length === 0) {
+      // console.log('!guards?.length && !Object.values(resolvers).length)', props.path);
+      setGuardStatus(ExtentedRouterStatus.SUCCESS);
 
-      }
+    }
     // }
 
   }, [location.pathname]);
@@ -226,25 +228,37 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
   //   </RouteContext.Provider>
   // );
   //
+  // useMemo(() => {
+  //   const isExactPath = isPathTheSame(location.pathname, path);
+  //   // let routeStatus = status;
+  //   if (
+  //     status === ExtentedRouterStatus.SUCCESS && isExactPath &&
+  //     ((resolvers !== undefined && Object.values(resolvers).length !== 0) || guards?.length)
+  //   ) {
+  //     // routeStatus = ExtentedRouterStatus.INITIAL;
+  //     // console.log('INITIAL STATUS WAS SETTED', path);
+  //     setGuardStatus(ExtentedRouterStatus.INITIAL);
+  //   }
+  // }, []);
   useEffect(() => {
     (async () => {
       // const isComponentPathMatched = isPathTheSame(location.pathname, path) || true;
       // if (isComponentPathMatched) {
-        //   console.log(`Stored path: ${storedPath} currentPath: ${path}`);
-        // let currentRouteStatus = context.guardStatus;
-        //   // console.log('PATH', path, 'stored' + storedPath);
-        //   const isNotOldCachedResult = context.guardStatus === ExtentedRouterStatus.SUCCESS && storedPath !== path && storedPath !== '';
-        //   const isDirectRouteAndGuardAlreadyWorked =
-        //     context.guardStatus === ExtentedRouterStatus.SUCCESS && storedPath !== '' && isPathTheSame(location.pathname, storedPath);
-        //   if (isNotOldCachedResult || isDirectRouteAndGuardAlreadyWorked) {
-        //     currentRouteStatus = ExtentedRouterStatus.INITIAL;
-        //     // console.log('INITIAL STATUS WAS SETTED', path);
-        //     setStatusAndPath(ExtentedRouterStatus.INITIAL);
-        //   }
-        //   if (!guards?.length && !Object.values(resolvers).length) {
-        //     // console.log('!guards?.length && !Object.values(resolvers).length)', path);
-        //     setStatusAndPath(ExtentedRouterStatus.SUCCESS);
-        //   }
+      //   console.log(`Stored path: ${storedPath} currentPath: ${path}`);
+      // let currentRouteStatus = context.guardStatus;
+      //   // console.log('PATH', path, 'stored' + storedPath);
+      //   const isNotOldCachedResult = context.guardStatus === ExtentedRouterStatus.SUCCESS && storedPath !== path && storedPath !== '';
+      //   const isDirectRouteAndGuardAlreadyWorked =
+      //     context.guardStatus === ExtentedRouterStatus.SUCCESS && storedPath !== '' && isPathTheSame(location.pathname, storedPath);
+      //   if (isNotOldCachedResult || isDirectRouteAndGuardAlreadyWorked) {
+      //     currentRouteStatus = ExtentedRouterStatus.INITIAL;
+      //     // console.log('INITIAL STATUS WAS SETTED', path);
+      //     setStatusAndPath(ExtentedRouterStatus.INITIAL);
+      //   }
+      //   if (!guards?.length && !Object.values(resolvers).length) {
+      //     // console.log('!guards?.length && !Object.values(resolvers).length)', path);
+      //     setStatusAndPath(ExtentedRouterStatus.SUCCESS);
+      //   }
       // const isExactPath = isPathTheSame(location.pathname, path);
       // if (
       //   status === ExtentedRouterStatus.SUCCESS && isExactPath &&
@@ -254,48 +268,76 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
       //   // console.log('INITIAL STATUS WAS SETTED', props.path);
       //   // setGuardStatus(ExtentedRouterStatus.INITIAL);
       // }
-      const isExactPath = isPathTheSame(location.pathname, path);
-      let routeStatus = status;
-      if (
-        status === ExtentedRouterStatus.SUCCESS && isExactPath &&
-        ((resolvers !== undefined && Object.values(resolvers).length !== 0) || guards?.length)
-      ) {
-        routeStatus = ExtentedRouterStatus.INITIAL;
-        // console.log('INITIAL STATUS WAS SETTED', props.path);
-        setGuardStatus(ExtentedRouterStatus.INITIAL);
-      }
-      console.log(`INIT: ${path}`);
-        const needToLoadExtraInfoForComponent = routeStatus === ExtentedRouterStatus.INITIAL;
-        console.log(`status: ${status} path: ${path}`);
-        if (needToLoadExtraInfoForComponent) {
-          // console.log('CHECKING GUARDS', path);
-          const guardStatus = await routerManager.checkGuards(location.pathname);
-          if (guardStatus === ExtentedRouterStatus.SUCCESS || !guards?.length) {
-            // console.log(path);
-            // // if (pageTitle && ) {
-            // //   console.log(pageTitle);
-            // //   titleSubject.next(pageTitle);
-            // // }
-            if (Object.keys(resolvers).length) {
-              const resolverData = await routerManager.loadResolvers();
-              setResolverInfo(resolverData);
-            }
+      // const isExactPath = isPathTheSame(location.pathname, path);
+      // let routeStatus = status;
+      // if (
+      //   status === ExtentedRouterStatus.SUCCESS && isExactPath &&
+      //   ((resolvers !== undefined && Object.values(resolvers).length !== 0) || guards?.length)
+      // ) {
+      //   // routeStatus = ExtentedRouterStatus.INITIAL;
+      //   // // console.log('INITIAL STATUS WAS SETTED', props.path);
+      //   // setGuardStatus(ExtentedRouterStatus.INITIAL);
+      // }
+      // console.log(`INIT: ${path}`);
+      const needToLoadExtraInfoForComponent = status === ExtentedRouterStatus.INITIAL;
+      // console.log(`status: ${status} path: ${path}`);
+      if (needToLoadExtraInfoForComponent) {
+        // console.log('CHECKING GUARDS', path);
+        const guardStatus = await routerManager.checkGuards(location.pathname);
+        if (guardStatus === ExtentedRouterStatus.SUCCESS || !guards?.length) {
+          // console.log(path);
+          // // if (pageTitle && ) {
+          // //   console.log(pageTitle);
+          // //   titleSubject.next(pageTitle);
+          // // }
+          if (Object.keys(resolvers).length) {
+            const resolverData = await routerManager.loadResolvers();
+            setResolverInfo(resolverData);
           }
-          setStatusAndPath(guardStatus);
         }
+        setStatusAndPath(guardStatus);
+      }
       // }
 
 
     })();
-  }, []);
+  }, [status]);
 
-  console.log(`Status: ${status} path: ${path}`);
+  // let firstRender = true;
+  const firstRenderRef = useRef<boolean>(true);
+  // const yourComponent = () =>{
+  useEffect(() => {
+    firstRenderRef.current = false;
+  }, []);
+  if (firstRenderRef.current) {
+    console.log('first render')
+    const isExactPath = isPathTheSame(location.pathname, path);
+    // let routeStatus = status;
+    if (
+      status === ExtentedRouterStatus.SUCCESS && isExactPath &&
+      ((resolvers !== undefined && Object.values(resolvers).length !== 0) || guards?.length)
+    ) {
+      // routeStatus = ExtentedRouterStatus.INITIAL;
+      console.log('INITIAL STATUS WAS SETTED', path);
+      setGuardStatus(ExtentedRouterStatus.INITIAL);
+    }
+  }
+  // if (ref.current) {
+  //   return null;
+  // }
+  // return null
+  // }
+
+  // console.log(`Status: ${status} path: ${path}`);
   // useEffect(() => {
   //   console.log(path);
   // }, []);
 
-  if ([status].includes(ExtentedRouterStatus.SUCCESS)) {
-    console.log('RENDER' + path);
+  const hasGuardsOrResolvers = ((!isNullOrUndefined(resolvers) && Object.values(resolvers).length !== 0) || (Array.isArray(guards) && guards.length !== 0));
+  const firstRenderCondition = hasGuardsOrResolvers ? !firstRenderRef.current : true;
+  console.log(firstRenderCondition);
+  if ([status].includes(ExtentedRouterStatus.SUCCESS) && firstRenderCondition) {
+    // console.log('RENDER' + path);
     return (
       <Component></Component>
       // <RouteContext.Provider value={{
@@ -319,7 +361,7 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
   }
 
   if (status === ExtentedRouterStatus.FAIL) {
-    return <Redirect to={routerManager.getRedirectUrl() }/>;
+    return <Redirect to={routerManager.getRedirectUrl()} />;
   }
 
   return null;

@@ -192,6 +192,7 @@ function useManager(_a) {
 }
 //# sourceMappingURL=hooks.js.map
 
+var isNullOrUndefined = function (value) { return value === null || value === undefined; };
 var ParentRoute = /** @class */ (function () {
     function ParentRoute(parentRoute) {
         this.parentRoute = parentRoute;
@@ -374,23 +375,25 @@ var InnerExtendedRouter = function (_a) {
     //   </RouteContext.Provider>
     // );
     //
+    // useMemo(() => {
+    //   const isExactPath = isPathTheSame(location.pathname, path);
+    //   // let routeStatus = status;
+    //   if (
+    //     status === ExtentedRouterStatus.SUCCESS && isExactPath &&
+    //     ((resolvers !== undefined && Object.values(resolvers).length !== 0) || guards?.length)
+    //   ) {
+    //     // routeStatus = ExtentedRouterStatus.INITIAL;
+    //     // console.log('INITIAL STATUS WAS SETTED', path);
+    //     setGuardStatus(ExtentedRouterStatus.INITIAL);
+    //   }
+    // }, []);
     useEffect(function () {
         (function () { return __awaiter(void 0, void 0, void 0, function () {
-            var isExactPath, routeStatus, needToLoadExtraInfoForComponent, guardStatus, resolverData;
+            var needToLoadExtraInfoForComponent, guardStatus, resolverData;
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        isExactPath = isPathTheSame(location.pathname, path);
-                        routeStatus = status;
-                        if (status === ExtentedRouterStatus.SUCCESS && isExactPath &&
-                            ((resolvers !== undefined && Object.values(resolvers).length !== 0) || (guards === null || guards === void 0 ? void 0 : guards.length))) {
-                            routeStatus = ExtentedRouterStatus.INITIAL;
-                            // console.log('INITIAL STATUS WAS SETTED', props.path);
-                            setGuardStatus(ExtentedRouterStatus.INITIAL);
-                        }
-                        console.log("INIT: " + path);
-                        needToLoadExtraInfoForComponent = routeStatus === ExtentedRouterStatus.INITIAL;
-                        console.log("status: " + status + " path: " + path);
+                        needToLoadExtraInfoForComponent = status === ExtentedRouterStatus.INITIAL;
                         if (!needToLoadExtraInfoForComponent) return [3 /*break*/, 4];
                         return [4 /*yield*/, routerManager.checkGuards(location.pathname)];
                     case 1:
@@ -409,13 +412,38 @@ var InnerExtendedRouter = function (_a) {
                 }
             });
         }); })();
+    }, [status]);
+    // let firstRender = true;
+    var firstRenderRef = useRef(true);
+    // const yourComponent = () =>{
+    useEffect(function () {
+        firstRenderRef.current = false;
     }, []);
-    console.log("Status: " + status + " path: " + path);
+    if (firstRenderRef.current) {
+        console.log('first render');
+        var isExactPath = isPathTheSame(location.pathname, path);
+        // let routeStatus = status;
+        if (status === ExtentedRouterStatus.SUCCESS && isExactPath &&
+            ((resolvers !== undefined && Object.values(resolvers).length !== 0) || (guards === null || guards === void 0 ? void 0 : guards.length))) {
+            // routeStatus = ExtentedRouterStatus.INITIAL;
+            console.log('INITIAL STATUS WAS SETTED', path);
+            setGuardStatus(ExtentedRouterStatus.INITIAL);
+        }
+    }
+    // if (ref.current) {
+    //   return null;
+    // }
+    // return null
+    // }
+    // console.log(`Status: ${status} path: ${path}`);
     // useEffect(() => {
     //   console.log(path);
     // }, []);
-    if ([status].includes(ExtentedRouterStatus.SUCCESS)) {
-        console.log('RENDER' + path);
+    var hasGuardsOrResolvers = ((!isNullOrUndefined(resolvers) && Object.values(resolvers).length !== 0) || (Array.isArray(guards) && guards.length !== 0));
+    var firstRenderCondition = hasGuardsOrResolvers ? !firstRenderRef.current : true;
+    console.log(firstRenderCondition);
+    if ([status].includes(ExtentedRouterStatus.SUCCESS) && firstRenderCondition) {
+        // console.log('RENDER' + path);
         return (React.createElement(Component, null)
         // <RouteContext.Provider value={{
         //   parent: new ParentRoute(path),
