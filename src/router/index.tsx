@@ -155,15 +155,9 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
 };
 
 export const ChildRoutes = () => {
-  const context = React.useContext(RouteContext);
-  const location = useLocation();
-  if (context.parent.path !== location.pathname) {
-    return context.outlet;
-  }
-  return null;
+  return React.useContext(RouteContext).outlet;
 };
 
 export const useResolver = () => {
-  const context = React.useContext(RouteContext);
-  return context.routeResolverInfos;
+  return React.useContext(RouteContext).routeResolverInfos;
 };

@@ -300,16 +300,10 @@ var InnerExtendedRouter = function (_a) {
     return null;
 };
 var ChildRoutes = function () {
-    var context = React.useContext(RouteContext);
-    var location = useLocation();
-    if (context.parent.path !== location.pathname) {
-        return context.outlet;
-    }
-    return null;
+    return React.useContext(RouteContext).outlet;
 };
 var useResolver = function () {
-    var context = React.useContext(RouteContext);
-    return context.routeResolverInfos;
+    return React.useContext(RouteContext).routeResolverInfos;
 };
 
 export { ChildRoutes, ExtendedRouter, sleep, useResolver };

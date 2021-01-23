@@ -36,17 +36,17 @@ context('Simple routing', () => {
 
   describe('Render page content with query params', () => {
     before(() => {
-      cy.visit('http://localhost:3000/simple-routing?testParam=1');
+      cy.visit('http://localhost:3000/simple-routing?queryParam=1');
     });
     it('Should render page content', () => {
       cy.get('#parent-1-title').should('have.text', 'Parent Title 1');
       cy.get('#parent-1-counter').should('have.text', '1');
-      cy.location().should((loc) => {
-
-        expect(loc.search).to.eq('?testParam=1');
+      cy.location().should(loc => {
+        expect(loc.search).to.eq('?queryParam=1');
       });
     });
   });
+
   describe('Render page content 2 children', () => {
     before(() => {
       cy.visit('http://localhost:3000/simple-routing-two-children');
