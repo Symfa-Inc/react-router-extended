@@ -46,22 +46,21 @@
   },
   "scripts": {
     "build": "rollup -c",
-    "build-watch": "rollup -c -w",
-    "install-all": "npm i && cd examples/test && npm i",
-    "start:test": "cd examples/test && npm start",
-    "deploy-example": "cd example && npm run deploy",
-    "pretest": "npm run build",
-    "dev:test": "concurrently --kill-others \"npm run build-watch\" \"npm run start:test\"",
-    "test:lint": "eslint ./src/**/*.ts ./src/**/*.tsx ./examples/test/src/**/*.ts ./examples/test/src/**/*.ts",
-    "test:lint:fix": "npm run test:lint -- --fix",
+    "build:watch": "rollup -c -w",
+    "install:all": "npm i && cd test/example-for-test && npm i",
+    "start:example-for-test": "cd test/example-for-test && npm start",
+    "dev:example-for-test": "concurrently --kill-others \"npm run build:watch\" \"npm run start:example-for-test\"",
+    "lint:example-for-test": "eslint ./src/**/*.ts ./src/**/*.tsx ./test/example-for-test/src/**/*.ts ./test/example-for-test/src/**/*.ts",
+    "lint:example-for-test:fix": "npm run lint:example-for-test -- --fix",
     "cy:run": "cypress run",
-    "test": "start-server-and-test start:test http://localhost:3000 cy:run"
+    "test": "start-server-and-test start:example-for-test http://localhost:3000 cy:run",
+    "deploy-example": "cd example && npm run deploy",
+    "pretest": "npm run build"
   },
   "files": [
     "dist"
   ],
   "dependencies": {
-    "@types/route-parser": "^0.1.3",
-    "url-pattern": "^1.0.3"
+    "@types/route-parser": "^0.1.3"
   }
 }

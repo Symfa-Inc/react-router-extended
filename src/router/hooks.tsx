@@ -19,7 +19,7 @@ export function useManager({ resolvers, guards, pathname, redirectUrl }: UserMan
       guards,
       pathname,
       props: {},
-      redirectUrl
+      redirectUrl,
     };
   }
 
@@ -52,9 +52,7 @@ export function useManager({ resolvers, guards, pathname, redirectUrl }: UserMan
 
   async function loadResolvers() {
     const keys = Object.keys(resolvers).map(resolverKey => resolverKey);
-    const promises = Object.keys(resolvers).map(resolverKey =>
-      resolvers[resolverKey].resolve(),
-    );
+    const promises = Object.keys(resolvers).map(resolverKey => resolvers[resolverKey].resolve());
     const resultOfResolvers = await Promise.all(promises).catch(e => {
       console.error('Error in resolvers');
       console.error(e);

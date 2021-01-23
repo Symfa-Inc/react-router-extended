@@ -1,4 +1,4 @@
-import { ComponentProps, ElementType } from 'react';
+import { ElementType } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 export type RouterPath = string | string[] | undefined;
@@ -25,18 +25,23 @@ export enum ExtentedRouterStatus {
   SUCCESS,
   FAIL,
 }
+
 export interface PropsResolvers {
   [index: string]: Resolver;
 }
+
 export interface Guard {
   canActivate(): Promise<boolean> | boolean;
+
   redirectUrl?: string;
 }
+
 export interface Resolver {
   resolve(): Promise<void> | void;
 }
 
 export type Props = RouteComponentProps & ExtendedRouterProps;
+
 export interface ParentComponentWithChildRoutes {
   childRoutes: JSX.Element[];
 }
