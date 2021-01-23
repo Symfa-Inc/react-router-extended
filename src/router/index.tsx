@@ -5,21 +5,43 @@ import { isNullOrUndefined, setKey } from './helpers';
 import { useManager } from './hooks';
 import { ExtendedRouterProps, ExtentedRouterStatus } from './types';
 
-class ParentRoute {
-  constructor(private parentRoute: string) {}
+class RouteCollector {
+  private children: RouteCollector[] = [];
 
   get path() {
-    return this.parentRoute;
+    return this.currentRouteController;
+  }
+
+  constructor(private currentRouteController: string, private parentRoute: RouteCollector | null) {}
+
+  addChildRoute(childRoute: RouteCollector) {
+    this.children.push(childRoute);
+  }
+
+  getFullPathForChild(childrenPath: string) {
+    const parentPath = this.getFullPathForRoute();
+    return parentPath + childrenPath;
+  }
+
+  getChildRouteByPath(childPath: string) {
+    return this.children.find(cr => cr.path === childPath);
+  }
+
+  getFullPathForRoute() {
+    const parentRoute = (!isNullOrUndefined(this.parentRoute) ? this.parentRoute?.getFullPathForRoute() : '') as string;
+    const normalizedParentPath = parentRoute === this.path ? '' : parentRoute;
+    return `${normalizedParentPath}${this.path}`;
   }
 }
 
-export const RouteContext = React.createContext({
-  parent: new ParentRoute(''),
+export const RouteContext = React.createContext<{ parent: any; outlet: any; routeResolverInfos: any }>({
+  parent: null,
   outlet: null,
-  routeData: {},
+  routeResolverInfos: {},
 });
 
 export const ExtendedRouter: FunctionComponent<ExtendedRouterProps> = props => {
+  const context = React.useContext(RouteContext);
   const [resolverInfo, setResolverInfo] = useState({});
   const [status, setGuardStatus] = useState<ExtentedRouterStatus>(ExtentedRouterStatus.INITIAL);
 
@@ -28,17 +50,31 @@ export const ExtendedRouter: FunctionComponent<ExtendedRouterProps> = props => {
       setGuardStatus(ExtentedRouterStatus.SUCCESS);
     }
   }, [location.pathname]);
+  const parentRoute = context.parent;
+  let currentRouteController = new RouteCollector(
+    props.path,
+    !isNullOrUndefined(parentRoute) ? parentRoute : new RouteCollector(props.path, null),
+  );
+  if (parentRoute) {
+    const currentRouteInParentRoute = parentRoute.getChildRouteByPath(props.path);
+    if (!isNullOrUndefined(currentRouteInParentRoute)) {
+      currentRouteController = currentRouteInParentRoute;
+    } else {
+      parentRoute.addChildRoute(currentRouteController);
+    }
+  }
+  const componentPath = !isNullOrUndefined(parentRoute) ? parentRoute.getFullPathForChild(props.path) : props.path;
   return (
     <Route
-      key={setKey(props.path)}
-      exact={props.exact}
-      path={props.path}
+      key={setKey(componentPath)}
+      exact={!isNullOrUndefined(props.children) ? false : props.exact} // TODO: If parent has children route set exact to true doesn't make sense
+      path={componentPath}
       render={() => (
         <RouteContext.Provider
           value={{
-            parent: new ParentRoute(props.path),
+            parent: currentRouteController,
             outlet: props.children,
-            routeData: resolverInfo,
+            routeResolverInfos: resolverInfo,
           }}
         >
           <RouteContext.Consumer>
@@ -129,5 +165,5 @@ export const ChildRoutes = () => {
 
 export const useResolver = () => {
   const context = React.useContext(RouteContext);
-  return context.routeData;
+  return context.routeResolverInfos;
 };
