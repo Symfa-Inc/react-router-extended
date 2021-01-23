@@ -65,13 +65,6 @@ function __generator(thisArg, body) {
     }
 }
 
-var ExtendedRouterStatus;
-(function (ExtendedRouterStatus) {
-    ExtendedRouterStatus[ExtendedRouterStatus["INITIAL"] = 1] = "INITIAL";
-    ExtendedRouterStatus[ExtendedRouterStatus["SUCCESS"] = 2] = "SUCCESS";
-    ExtendedRouterStatus[ExtendedRouterStatus["FAIL"] = 3] = "FAIL";
-})(ExtendedRouterStatus || (ExtendedRouterStatus = {}));
-
 var sleep = function (t) { return new Promise(function (res) { return setTimeout(function () { return res(); }, t); }); };
 var isNullOrUndefined = function (value) { return value === null || value === undefined; };
 var checkIfPathIsUndefined = function (path) {
@@ -86,6 +79,13 @@ var setKey = function (path) {
     }
     return path;
 };
+
+var ExtendedRouterStatus;
+(function (ExtendedRouterStatus) {
+    ExtendedRouterStatus[ExtendedRouterStatus["INITIAL"] = 1] = "INITIAL";
+    ExtendedRouterStatus[ExtendedRouterStatus["SUCCESS"] = 2] = "SUCCESS";
+    ExtendedRouterStatus[ExtendedRouterStatus["FAIL"] = 3] = "FAIL";
+})(ExtendedRouterStatus || (ExtendedRouterStatus = {}));
 
 function useManager(_a) {
     var resolvers = _a.resolvers, guards = _a.guards, pathname = _a.pathname, redirectUrl = _a.redirectUrl;
