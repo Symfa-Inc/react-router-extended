@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { ExtentedRouterStatus, Guard, PropsResolvers } from './types';
+import { ExtendedRouterStatus, Guard, PropsResolvers } from './types';
 
 interface UserManager {
   resolvers: PropsResolvers;
@@ -23,7 +23,7 @@ export function useManager({ resolvers, guards, pathname, redirectUrl }: UserMan
     };
   }
 
-  async function checkGuards(pathname: string): Promise<ExtentedRouterStatus> {
+  async function checkGuards(pathname: string): Promise<ExtendedRouterStatus> {
     const result: { isOk: boolean; redirectUrl?: string }[] = [];
     for (const guard of infoAboutComponent.current[pathname].guards) {
       const hasFailInGuard = result.some(r => !r.isOk);
@@ -47,7 +47,7 @@ export function useManager({ resolvers, guards, pathname, redirectUrl }: UserMan
       };
     }
 
-    return !firstFailedGuard ? ExtentedRouterStatus.SUCCESS : ExtentedRouterStatus.FAIL;
+    return !firstFailedGuard ? ExtendedRouterStatus.SUCCESS : ExtendedRouterStatus.FAIL;
   }
 
   async function loadResolvers() {

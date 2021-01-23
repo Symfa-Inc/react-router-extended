@@ -1,4 +1,4 @@
-import { ExtentedRouterStatus, Guard, RouterPath } from './types';
+import { ExtendedRouterStatus, Guard, RouterPath } from './types';
 
 export const sleep = (t: number) => new Promise(res => setTimeout(() => res(), t));
 
@@ -10,7 +10,7 @@ const checkIfPathIsUndefined = (path: RouterPath) => {
   }
 };
 
-export const checkGuards = async (guards: Guard[]): Promise<ExtentedRouterStatus> => {
+export const checkGuards = async (guards: Guard[]): Promise<ExtendedRouterStatus> => {
   const result = [];
   for (const guard of guards) {
     try {
@@ -24,7 +24,7 @@ export const checkGuards = async (guards: Guard[]): Promise<ExtentedRouterStatus
   }
   const isOk = !result.some(i => !i);
 
-  return isOk ? ExtentedRouterStatus.SUCCESS : ExtentedRouterStatus.FAIL;
+  return isOk ? ExtendedRouterStatus.SUCCESS : ExtendedRouterStatus.FAIL;
 };
 
 export const setKey = (path: RouterPath): string => {

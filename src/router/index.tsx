@@ -3,7 +3,7 @@ import { Redirect, Route, useLocation } from 'react-router-dom';
 
 import { isNullOrUndefined, setKey } from './helpers';
 import { useManager } from './hooks';
-import { ExtendedRouterProps, ExtentedRouterStatus } from './types';
+import { ExtendedRouterProps, ExtendedRouterStatus } from './types';
 
 class RouteCollector {
   private children: RouteCollector[] = [];
@@ -43,11 +43,11 @@ export const RouteContext = React.createContext<{ parent: any; outlet: any; rout
 export const ExtendedRouter: FunctionComponent<ExtendedRouterProps> = props => {
   const context = React.useContext(RouteContext);
   const [resolverInfo, setResolverInfo] = useState({});
-  const [status, setGuardStatus] = useState<ExtentedRouterStatus>(ExtentedRouterStatus.INITIAL);
+  const [status, setGuardStatus] = useState<ExtendedRouterStatus>(ExtendedRouterStatus.INITIAL);
 
   useEffect(() => {
     if (props.resolvers !== undefined && !props.guards?.length && Object.values(props.resolvers).length === 0) {
-      setGuardStatus(ExtentedRouterStatus.SUCCESS);
+      setGuardStatus(ExtendedRouterStatus.SUCCESS);
     }
   }, [location.pathname]);
   const parentRoute = context.parent;
@@ -107,15 +107,15 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
 
   const routerManager = useManager({ resolvers, guards, pathname: location.pathname, redirectUrl });
 
-  const setStatusAndPath = (status: ExtentedRouterStatus) => {
+  const setStatusAndPath = (status: ExtendedRouterStatus) => {
     setGuardStatus(status);
   };
   useEffect(() => {
     (async () => {
-      const needToLoadExtraInfoForComponent = status === ExtentedRouterStatus.INITIAL;
+      const needToLoadExtraInfoForComponent = status === ExtendedRouterStatus.INITIAL;
       if (needToLoadExtraInfoForComponent) {
         const guardStatus = await routerManager.checkGuards(location.pathname);
-        if (guardStatus === ExtentedRouterStatus.SUCCESS || !guards?.length) {
+        if (guardStatus === ExtendedRouterStatus.SUCCESS || !guards?.length) {
           if (Object.keys(resolvers).length) {
             const resolverData = await routerManager.loadResolvers();
             setResolverInfo(resolverData);
@@ -132,10 +132,10 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
   }, []);
   if (firstRenderRef.current) {
     if (
-      status === ExtentedRouterStatus.SUCCESS &&
+      status === ExtendedRouterStatus.SUCCESS &&
       ((resolvers !== undefined && Object.values(resolvers).length !== 0) || guards?.length)
     ) {
-      setGuardStatus(ExtentedRouterStatus.INITIAL);
+      setGuardStatus(ExtendedRouterStatus.INITIAL);
     }
   }
 
@@ -143,11 +143,11 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
     (!isNullOrUndefined(resolvers) && Object.values(resolvers).length !== 0) ||
     (Array.isArray(guards) && guards.length !== 0);
   const firstRenderCondition = hasGuardsOrResolvers ? !firstRenderRef.current : true;
-  if (status == ExtentedRouterStatus.SUCCESS && firstRenderCondition) {
+  if (status == ExtendedRouterStatus.SUCCESS && firstRenderCondition) {
     return <Component />;
   }
 
-  if (status === ExtentedRouterStatus.FAIL) {
+  if (status === ExtendedRouterStatus.FAIL) {
     return <Redirect to={routerManager.getRedirectUrl()} />;
   }
 

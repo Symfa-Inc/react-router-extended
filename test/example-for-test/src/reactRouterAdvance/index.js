@@ -65,13 +65,12 @@ function __generator(thisArg, body) {
     }
 }
 
-var ExtentedRouterStatus;
-(function (ExtentedRouterStatus) {
-    ExtentedRouterStatus[ExtentedRouterStatus["INITIAL"] = 1] = "INITIAL";
-    ExtentedRouterStatus[ExtentedRouterStatus["SUCCESS"] = 2] = "SUCCESS";
-    ExtentedRouterStatus[ExtentedRouterStatus["FAIL"] = 3] = "FAIL";
-})(ExtentedRouterStatus || (ExtentedRouterStatus = {}));
-//# sourceMappingURL=types.js.map
+var ExtendedRouterStatus;
+(function (ExtendedRouterStatus) {
+    ExtendedRouterStatus[ExtendedRouterStatus["INITIAL"] = 1] = "INITIAL";
+    ExtendedRouterStatus[ExtendedRouterStatus["SUCCESS"] = 2] = "SUCCESS";
+    ExtendedRouterStatus[ExtendedRouterStatus["FAIL"] = 3] = "FAIL";
+})(ExtendedRouterStatus || (ExtendedRouterStatus = {}));
 
 var sleep = function (t) { return new Promise(function (res) { return setTimeout(function () { return res(); }, t); }); };
 var isNullOrUndefined = function (value) { return value === null || value === undefined; };
@@ -87,7 +86,6 @@ var setKey = function (path) {
     }
     return path;
 };
-//# sourceMappingURL=helpers.js.map
 
 function useManager(_a) {
     var resolvers = _a.resolvers, guards = _a.guards, pathname = _a.pathname, redirectUrl = _a.redirectUrl;
@@ -139,7 +137,7 @@ function useManager(_a) {
                         if (firstFailedGuard && firstFailedGuard.redirectUrl) {
                             infoAboutComponent.current[pathname] = __assign(__assign({}, infoAboutComponent.current[pathname]), { redirectUrl: firstFailedGuard.redirectUrl });
                         }
-                        return [2 /*return*/, !firstFailedGuard ? ExtentedRouterStatus.SUCCESS : ExtentedRouterStatus.FAIL];
+                        return [2 /*return*/, !firstFailedGuard ? ExtendedRouterStatus.SUCCESS : ExtendedRouterStatus.FAIL];
                 }
             });
         });
@@ -178,7 +176,6 @@ function useManager(_a) {
     }
     return { loadResolvers: loadResolvers, checkGuards: checkGuards, getRedirectUrl: getRedirectUrl };
 }
-//# sourceMappingURL=hooks.js.map
 
 var RouteCollector = /** @class */ (function () {
     function RouteCollector(currentRouteController, parentRoute) {
@@ -219,11 +216,11 @@ var RouteContext = React.createContext({
 var ExtendedRouter = function (props) {
     var context = React.useContext(RouteContext);
     var _a = useState({}), resolverInfo = _a[0], setResolverInfo = _a[1];
-    var _b = useState(ExtentedRouterStatus.INITIAL), status = _b[0], setGuardStatus = _b[1];
+    var _b = useState(ExtendedRouterStatus.INITIAL), status = _b[0], setGuardStatus = _b[1];
     useEffect(function () {
         var _a;
         if (props.resolvers !== undefined && !((_a = props.guards) === null || _a === void 0 ? void 0 : _a.length) && Object.values(props.resolvers).length === 0) {
-            setGuardStatus(ExtentedRouterStatus.SUCCESS);
+            setGuardStatus(ExtendedRouterStatus.SUCCESS);
         }
     }, [location.pathname]);
     var parentRoute = context.parent;
@@ -258,12 +255,12 @@ var InnerExtendedRouter = function (_a) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        needToLoadExtraInfoForComponent = status === ExtentedRouterStatus.INITIAL;
+                        needToLoadExtraInfoForComponent = status === ExtendedRouterStatus.INITIAL;
                         if (!needToLoadExtraInfoForComponent) return [3 /*break*/, 4];
                         return [4 /*yield*/, routerManager.checkGuards(location.pathname)];
                     case 1:
                         guardStatus = _a.sent();
-                        if (!(guardStatus === ExtentedRouterStatus.SUCCESS || !(guards === null || guards === void 0 ? void 0 : guards.length))) return [3 /*break*/, 3];
+                        if (!(guardStatus === ExtendedRouterStatus.SUCCESS || !(guards === null || guards === void 0 ? void 0 : guards.length))) return [3 /*break*/, 3];
                         if (!Object.keys(resolvers).length) return [3 /*break*/, 3];
                         return [4 /*yield*/, routerManager.loadResolvers()];
                     case 2:
@@ -283,18 +280,18 @@ var InnerExtendedRouter = function (_a) {
         firstRenderRef.current = false;
     }, []);
     if (firstRenderRef.current) {
-        if (status === ExtentedRouterStatus.SUCCESS &&
+        if (status === ExtendedRouterStatus.SUCCESS &&
             ((resolvers !== undefined && Object.values(resolvers).length !== 0) || (guards === null || guards === void 0 ? void 0 : guards.length))) {
-            setGuardStatus(ExtentedRouterStatus.INITIAL);
+            setGuardStatus(ExtendedRouterStatus.INITIAL);
         }
     }
     var hasGuardsOrResolvers = (!isNullOrUndefined(resolvers) && Object.values(resolvers).length !== 0) ||
         (Array.isArray(guards) && guards.length !== 0);
     var firstRenderCondition = hasGuardsOrResolvers ? !firstRenderRef.current : true;
-    if (status == ExtentedRouterStatus.SUCCESS && firstRenderCondition) {
+    if (status == ExtendedRouterStatus.SUCCESS && firstRenderCondition) {
         return React.createElement(Component, null);
     }
-    if (status === ExtentedRouterStatus.FAIL) {
+    if (status === ExtendedRouterStatus.FAIL) {
         return React.createElement(Redirect, { to: routerManager.getRedirectUrl() });
     }
     return null;
