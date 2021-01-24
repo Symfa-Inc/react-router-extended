@@ -1,87 +1,187 @@
-import React, { useState, useEffect } from 'react';
-import { Redirect, Route } from 'react-router-dom';
-import { ExtendedRouterProps, ExtentedRouterStatus } from './types';
+import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
+import { matchPath } from 'react-router';
+import { Redirect, Route, useLocation } from 'react-router-dom';
+
+import { isNullOrUndefined, setKey } from './helpers';
 import { useManager } from './hooks';
-import * as UrlPattern from 'url-pattern';
+import { ExtendedRouterProps, ExtendedRouterStatus } from './types';
 
-import { isPathMatched, setKey } from './helpers';
+class RouteCollector {
+  private children: RouteCollector[] = [];
 
-export const ExtendedRouter = ({
+  get path() {
+    return this.currentRouteController;
+  }
+
+  constructor(private currentRouteController: string, private parentRoute: RouteCollector | null) {}
+
+  addChildRoute(childRoute: RouteCollector) {
+    this.children.push(childRoute);
+  }
+
+  getFullPathForChild(childrenPath: string) {
+    const parentPath = this.getFullPathForRoute();
+    return parentPath + childrenPath;
+  }
+
+  getChildRouteByPath(childPath: string) {
+    return this.children.find(cr => cr.path === childPath);
+  }
+
+  getFullPathForRoute() {
+    const parentRoute = (!isNullOrUndefined(this.parentRoute) ? this.parentRoute?.getFullPathForRoute() : '') as string;
+    const normalizedParentPath = parentRoute === this.path ? '' : parentRoute;
+    return `${normalizedParentPath}${this.path}`;
+  }
+}
+
+export const RouteContext = React.createContext<{ parent: any; outlet: any; routeResolverInfos: any }>({
+  parent: null,
+  outlet: null,
+  routeResolverInfos: {},
+});
+
+export const ExtendedRouter: FunctionComponent<Omit<
+  ExtendedRouterProps,
+  'setResolverInfo' | 'setGuardStatus' | 'status'
+>> = props => {
+  const context = React.useContext(RouteContext);
+  const [resolverInfo, setResolverInfo] = useState({});
+  const [status, setGuardStatus] = useState<ExtendedRouterStatus>(ExtendedRouterStatus.INITIAL);
+  const [storedPath, setPath] = useState<string>();
+
+  const setStatusAndPath = (newStatus: ExtendedRouterStatus) => {
+    setGuardStatus(newStatus);
+    setPath(props.path);
+  };
+  useEffect(() => {
+    if (props.resolvers !== undefined && !props.guards?.length && Object.values(props.resolvers).length === 0) {
+      setStatusAndPath(ExtendedRouterStatus.SUCCESS);
+    }
+  }, [location.pathname]);
+  const parentRoute = context.parent;
+  let currentRouteController = new RouteCollector(
+    props.path,
+    !isNullOrUndefined(parentRoute) ? parentRoute : new RouteCollector(props.path, null),
+  );
+  if (parentRoute) {
+    const currentRouteInParentRoute = parentRoute.getChildRouteByPath(props.path);
+    if (!isNullOrUndefined(currentRouteInParentRoute)) {
+      currentRouteController = currentRouteInParentRoute;
+    } else {
+      parentRoute.addChildRoute(currentRouteController);
+    }
+  }
+  const componentPath = !isNullOrUndefined(parentRoute) ? parentRoute.getFullPathForChild(props.path) : props.path;
+  return (
+    <Route
+      key={setKey(componentPath)}
+      exact={!isNullOrUndefined(props.children) ? false : props.exact} // TODO: If parent has children route set exact to true doesn't make sense
+      path={componentPath}
+      render={() => (
+        <RouteContext.Provider
+          value={{
+            parent: currentRouteController,
+            outlet: props.children,
+            routeResolverInfos: resolverInfo,
+          }}
+        >
+          <RouteContext.Consumer>
+            {() => (
+              <InnerExtendedRouter
+                {...props}
+                path={componentPath}
+                setResolverInfo={setResolverInfo}
+                setGuardStatus={setStatusAndPath}
+                status={
+                  storedPath === props.path && !isNullOrUndefined(storedPath) ? status : ExtendedRouterStatus.INITIAL
+                }
+              />
+            )}
+          </RouteContext.Consumer>
+        </RouteContext.Provider>
+      )}
+    />
+  );
+};
+
+const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
   path,
   component: Component,
   redirectUrl,
   guards = [],
   resolvers = {},
-  childs = [],
-  redirectToChild,
-  exact,
-  location,
-}: ExtendedRouterProps) => {
-  if (typeof location === 'undefined') {
-    throw new Error('Extended router must be wrapper in usual router!');
-  }
+
+  setResolverInfo,
+  setGuardStatus,
+  status,
+}) => {
+  const location = useLocation();
 
   const routerManager = useManager({ resolvers, guards, pathname: location.pathname, redirectUrl });
-  const [status, setStatus] = useState(ExtentedRouterStatus.INITIAL);
 
+  const setStatusAndPath = (status: ExtendedRouterStatus) => {
+    setGuardStatus(status);
+  };
   useEffect(() => {
     (async () => {
-      const isMatch = isPathMatched(location.pathname, path);
-      if (isMatch) {
+      const needToLoadExtraInfoForComponent = status === ExtendedRouterStatus.INITIAL;
+      if (needToLoadExtraInfoForComponent) {
         const guardStatus = await routerManager.checkGuards(location.pathname);
-        if (guardStatus === ExtentedRouterStatus.SUCCESS && Object.keys(resolvers).length) {
-          await routerManager.loadResolvers(location.pathname);
+        if (guardStatus === ExtendedRouterStatus.SUCCESS || !guards?.length) {
+          if (Object.keys(resolvers).length) {
+            const resolverData = await routerManager.loadResolvers();
+            setResolverInfo(resolverData);
+          }
         }
-        setStatus(guardStatus);
+        setStatusAndPath(guardStatus);
       }
     })();
-  }, [location.pathname]);
-  if (status === ExtentedRouterStatus.SUCCESS) {
-    return (
-      <>
-        <Route
-          key={setKey(path)}
-          exact={exact}
-          path={path}
-          render={props => {
-            if (redirectToChild !== undefined && childs.length) {
-              const lastIndex = redirectToChild.lastIndexOf('/');
+  }, [status]);
 
-              const onlyChildPath = redirectToChild.slice(lastIndex, redirectToChild.length);
-              const parentPath = redirectToChild.split(onlyChildPath)[0];
-
-              const pattern = new UrlPattern(parentPath);
-              const match = pattern.match(location.pathname);
-              const finalUrl = location.pathname + onlyChildPath;
-
-              if (match && location.pathname !== finalUrl) {
-                props.history.replace(finalUrl);
-                return;
-              }
-            }
-            return (
-              <Component
-                {...props}
-                {...routerManager.getProps(location.pathname)}
-                childRoutes={childs.map(route => (
-                  <ExtendedRouter
-                    {...route}
-                    key={setKey(route.path)}
-                    redirectUrl={route.redirectUrl}
-                    location={location}
-                  />
-                ))}
-              />
-            );
-          }}
-        />
-      </>
-    );
+  const firstRenderRef = useRef<boolean>(true);
+  useEffect(() => {
+    firstRenderRef.current = false;
+  }, []);
+  if (firstRenderRef.current) {
+    if (
+      [ExtendedRouterStatus.SUCCESS].includes(status as ExtendedRouterStatus) &&
+      ((resolvers !== undefined && Object.values(resolvers).length !== 0) || guards?.length)
+    ) {
+      setGuardStatus(ExtendedRouterStatus.INITIAL);
+    }
   }
 
-  if (status === ExtentedRouterStatus.FAIL) {
+  const hasGuardsOrResolvers =
+    (!isNullOrUndefined(resolvers) && Object.values(resolvers).length !== 0) ||
+    (Array.isArray(guards) && guards.length !== 0);
+  const firstRenderCondition = hasGuardsOrResolvers ? !firstRenderRef.current : true;
+  if (status == ExtendedRouterStatus.SUCCESS && firstRenderCondition) {
+    return <Component />;
+  }
+
+  const redirectUrlIsSameAsCurrentPath = matchPath(redirectUrl || '', {
+    path: path,
+    exact: true,
+    strict: false,
+  });
+
+  if (
+    status === ExtendedRouterStatus.FAIL &&
+    !isNullOrUndefined(redirectUrl) &&
+    redirectUrl !== '' &&
+    !redirectUrlIsSameAsCurrentPath
+  ) {
     return <Redirect to={routerManager.getRedirectUrl()} />;
   }
 
   return null;
 };
+
+export const ChildRoutes = () => {
+  return React.useContext(RouteContext).outlet;
+};
+
+export function useResolver<T = any>(): T {
+  return React.useContext(RouteContext).routeResolverInfos;
+}

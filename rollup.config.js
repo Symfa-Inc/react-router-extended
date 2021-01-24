@@ -14,7 +14,23 @@ export default [
       { file: pkg.main, format: 'cjs' },
       { file: pkg.module, format: 'esm' },
       {
-        file: 'examples/test/src/reactRouterAdvance/index.js',
+        file: 'test/example-for-test/src/reactRouterAdvance/index.js',
+        format: 'es',
+        banner: '/* eslint-disable */',
+      },
+
+      {
+        file: 'examples/basic-and-nested-routing/src/reactRouterAdvance/index.js',
+        format: 'es',
+        banner: '/* eslint-disable */',
+      },
+      {
+        file: 'examples/using-of-guards/src/reactRouterAdvance/index.js',
+        format: 'es',
+        banner: '/* eslint-disable */',
+      },
+      {
+        file: 'examples/using-of-resolvers/src/reactRouterAdvance/index.js',
         format: 'es',
         banner: '/* eslint-disable */',
       },
