@@ -80,7 +80,6 @@ var setKey = function (path) {
     }
     return path;
 };
-//# sourceMappingURL=helpers.js.map
 
 var ExtendedRouterStatus;
 (function (ExtendedRouterStatus) {
@@ -88,7 +87,6 @@ var ExtendedRouterStatus;
     ExtendedRouterStatus[ExtendedRouterStatus["SUCCESS"] = 2] = "SUCCESS";
     ExtendedRouterStatus[ExtendedRouterStatus["FAIL"] = 3] = "FAIL";
 })(ExtendedRouterStatus || (ExtendedRouterStatus = {}));
-//# sourceMappingURL=types.js.map
 
 function useManager(_a) {
     var resolvers = _a.resolvers, guards = _a.guards, pathname = _a.pathname, redirectUrl = _a.redirectUrl;
@@ -179,7 +177,6 @@ function useManager(_a) {
     }
     return { loadResolvers: loadResolvers, checkGuards: checkGuards, getRedirectUrl: getRedirectUrl };
 }
-//# sourceMappingURL=hooks.js.map
 
 var RouteCollector = /** @class */ (function () {
     function RouteCollector(currentRouteController, parentRoute) {
