@@ -66,10 +66,6 @@ context('Resolvers', () => {
             cy.get('#insert-place').should('have.text', 'child rendered once!child rendered once!');
           });
         });
-        // cy.get('#insert-place').should('have.text', 'first message | ');
-        // cy.get('#parent-1-counter').should('have.text', '2');
-
-        // cy.get('#parent-2-link-1').click();
       });
     });
 
