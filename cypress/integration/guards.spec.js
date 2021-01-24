@@ -65,6 +65,16 @@ context('Guards', () => {
         cy.get('#login-page-title').should('have.text', 'Login page!');
       });
     });
+    it('Guard should redirect and redirect page should be rendered', () => {
+      cy.visit('http://localhost:3000/guard-auto-redirect').then(() => {
+        cy.wait(50);
+        cy.location().then(loc => {
+          expect(loc.pathname).to.eq('/login-form');
+        });
+        cy.wait(50);
+        cy.get('#login-page-title').should('have.text', 'Login Page Title');
+      });
+    });
   });
   describe('Guards smart check', () => {
     it('Guards should be checked only for direct route and not for children', () => {

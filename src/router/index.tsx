@@ -1,6 +1,6 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
-import { Redirect, Route, useLocation } from 'react-router-dom';
 import { matchPath } from 'react-router';
+import { Redirect, Route, useLocation } from 'react-router-dom';
 
 import { isNullOrUndefined, setKey } from './helpers';
 import { useManager } from './hooks';
@@ -45,10 +45,15 @@ export const ExtendedRouter: FunctionComponent<ExtendedRouterProps> = props => {
   const context = React.useContext(RouteContext);
   const [resolverInfo, setResolverInfo] = useState({});
   const [status, setGuardStatus] = useState<ExtendedRouterStatus>(ExtendedRouterStatus.INITIAL);
+  const [storedPath, setPath] = useState<string>();
 
+  const setStatusAndPath = (newStatus: ExtendedRouterStatus) => {
+    setGuardStatus(newStatus);
+    setPath(props.path);
+  };
   useEffect(() => {
     if (props.resolvers !== undefined && !props.guards?.length && Object.values(props.resolvers).length === 0) {
-      setGuardStatus(ExtendedRouterStatus.SUCCESS);
+      setStatusAndPath(ExtendedRouterStatus.SUCCESS);
     }
   }, [location.pathname]);
   const parentRoute = context.parent;
@@ -84,8 +89,10 @@ export const ExtendedRouter: FunctionComponent<ExtendedRouterProps> = props => {
                 {...props}
                 path={componentPath}
                 setResolverInfo={setResolverInfo}
-                setGuardStatus={setGuardStatus}
-                status={status}
+                setGuardStatus={setStatusAndPath}
+                status={
+                  storedPath === props.path && !isNullOrUndefined(storedPath) ? status : ExtendedRouterStatus.INITIAL
+                }
               />
             )}
           </RouteContext.Consumer>
@@ -135,7 +142,7 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
   }, []);
   if (firstRenderRef.current) {
     if (
-      status === ExtendedRouterStatus.SUCCESS &&
+      [ExtendedRouterStatus.SUCCESS].includes(status as ExtendedRouterStatus) &&
       ((resolvers !== undefined && Object.values(resolvers).length !== 0) || guards?.length)
     ) {
       setGuardStatus(ExtendedRouterStatus.INITIAL);

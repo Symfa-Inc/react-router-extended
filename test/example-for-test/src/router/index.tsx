@@ -1,9 +1,12 @@
 import React from 'react';
 import { Router, Switch } from 'react-router-dom';
+import { Guard } from '../../../../examples/using-of-guards/src/reactRouterAdvance';
 import { MockGuard } from '../guards/mock.guard';
 import { ChildGuardConsistencyWork } from '../pages/guards/child';
+import { GuardLoginPage } from '../pages/guards/login-page-form';
 import { MockConsistentlyWorkGuard } from '../pages/guards/mock-guard';
 import { ParentGuardConsistencyWork } from '../pages/guards/parent';
+import { HomePageRoute } from '../pages/guards/parent-auto-redirect';
 import { ParentFailedGuard } from '../pages/guards/parent-with-failed-guard';
 import { ParentWithRedirect } from '../pages/guards/parent-with-redirect-guard';
 import { Child1GuardSmartCheck } from '../pages/guards/smart-check/child-1';
@@ -48,6 +51,12 @@ import { MockDataResolver } from '../resolvers/mock-data.resolver';
 
 import { history } from './history';
 
+class LoginGuard implements Guard {
+  canActivate(): boolean {
+    return localStorage.getItem('userAuthInfo') !== null;
+  }
+}
+
 const NestedTest = () => {
   return <div>Nested</div>;
 };
@@ -56,92 +65,8 @@ export const Routes = () => (
     <Switch>
       <ExtendedRouter path="/login" exact={true} component={LoginPage} />
       <ExtendedRouter path="/" exact={true} component={HomePage} />
-      <ExtendedRouter path="/ttwt" exact={true} component={HomePage} />
-      {/*<ExtendedRouter*/}
-      {/*  path="/page-with-redirect"*/}
-      {/*  guards={[new MockGuard(false)]}*/}
-      {/*  redirectUrl="/"*/}
-      {/*  exact={true}*/}
-      {/*  component={HomePage}*/}
-      {/*/>*/}
-      {/*<ExtendedRouter*/}
-      {/*  path="/page-with-redirect-on-guard"*/}
-      {/*  guards={[new MockGuard(false, '/guard-redirect-url')]}*/}
-      {/*  redirectUrl="/"*/}
-      {/*  exact={true}*/}
-      {/*  component={HomePage}*/}
-      {/*/>*/}
-      {/*<ExtendedRouter exact={true} path="/independent-page" component={IndependentPage}/>*/}
-      {/*<ExtendedRouter*/}
-      {/*  path="/page-with-redirect-on-static-child"*/}
-      {/*  component={PageWithRedirectOnStaticChild}*/}
-      {/*  redirectToChild="/page-with-redirect-on-static-child/static-child"*/}
-      {/*  childs={[*/}
-      {/*    {*/}
-      {/*      component: FirstTargetPage,*/}
-      {/*      path: '/page-with-redirect-on-static-child/static-child',*/}
-      {/*    },*/}
-      {/*    {*/}
-      {/*      path: '/page-with-redirect-on-static-child/second-static-child',*/}
-      {/*      component: SecondStaticChild,*/}
-      {/*    },*/}
-      {/*  ]}*/}
-      {/*/>*/}
-      {/*<ExtendedRouter*/}
-      {/*  path="/page-with-redirect-on-dynamic-child/:id"*/}
-      {/*  component={PageWithRedirectOnStaticChild}*/}
-      {/*  redirectToChild="/page-with-redirect-on-dynamic-child/:id/dynamic-child"*/}
-      {/*  childs={[*/}
-      {/*    {*/}
-      {/*      component: DynamicTargetChild,*/}
-      {/*      path: '/page-with-redirect-on-dynamic-child/:id/dynamic-child',*/}
-      {/*    },*/}
-      {/*    {*/}
-      {/*      path: '/page-with-redirect-on-dynamic-child/:id/second-dynamic-child',*/}
-      {/*      component: SecondStaticChild,*/}
-      {/*    },*/}
-      {/*  ]}*/}
-      {/*/>*/}
-      <ExtendedRouter
-        path="/tab-page"
-        pageTitle="Tab page title"
-        component={TabPage}
-        guards={[new MockGuard(true)]}
-        // childs={[
-        //   {
-        //     component: StaticChild,
-        //     path: '/tab-page/static-child',
-        //     pageTitle: 'Tab Child page title',
-        //     resolvers: {
-        //       mockUserData: new MockDataResolver({ name: 'Joy', lastName: 'Doy' }),
-        //       mockUiData: new MockDataResolver({ color: 'blue' }),
-        //     },
-        //   },
-        //   {
-        //     path: '/tab-page/second-static-child',
-        //     component: SecondStaticChild,
-        //   },
-        //   {
-        //     path: '/tab-page/dynamic-path-child-page/:id',
-        //     component: DynamicPathChildPage,
-        //     childs: [
-        //       {
-        //         path: '/tab-page/dynamic-path-child-page/:id/static-child',
-        //         component: DynamicParentStaticChild,
-        //       },
-        /*        path: '/tab-page/dynamic-path-child-page/:id/second-static-child',*/
-        /*        component: DynamicParentSecondStaticChild,*/
-        /*      },*/
-        //       {
-        //         path: '/tab-page/dynamic-path-child-page/:id/should-never-see',
-        //         component: ShouldNeverSee,
-        /*        guards: [new MockGuard(false)],*/
-        //         redirectUrl: '/login',
-        //       },
-        //     ],
-        //   },
-        // ]}
-      >
+
+      <ExtendedRouter path="/tab-page" pageTitle="Tab page title" component={TabPage} guards={[new MockGuard(true)]}>
         <ExtendedRouter component={StaticChild} path={'/static-child'}>
           <ExtendedRouter component={NestedTest} path={'/nested'} />
         </ExtendedRouter>
@@ -279,6 +204,15 @@ export const Routes = () => (
           <ExtendedRouter exact={true} path="/child-2" component={Child2ResolverSmartCheck} />
         </ExtendedRouter>
       </ExtendedRouter>
+
+      <ExtendedRouter
+        component={HomePageRoute}
+        path="/guard-auto-redirect"
+        redirectUrl="/login-form"
+        exact={true}
+        guards={[new LoginGuard()]}
+      />
+      <ExtendedRouter component={GuardLoginPage} path="/login-form" exact={true} />
     </Switch>
   </Router>
 );

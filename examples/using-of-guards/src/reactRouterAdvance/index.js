@@ -1,7 +1,7 @@
 /* eslint-disable */
 import React, { useRef, useState, useEffect } from 'react';
-import { Route, useLocation, Redirect } from 'react-router-dom';
 import { matchPath } from 'react-router';
+import { Route, useLocation, Redirect } from 'react-router-dom';
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -218,10 +218,15 @@ var ExtendedRouter = function (props) {
     var context = React.useContext(RouteContext);
     var _a = useState({}), resolverInfo = _a[0], setResolverInfo = _a[1];
     var _b = useState(ExtendedRouterStatus.INITIAL), status = _b[0], setGuardStatus = _b[1];
+    var _c = useState(), storedPath = _c[0], setPath = _c[1];
+    var setStatusAndPath = function (newStatus) {
+        setGuardStatus(newStatus);
+        setPath(props.path);
+    };
     useEffect(function () {
         var _a;
         if (props.resolvers !== undefined && !((_a = props.guards) === null || _a === void 0 ? void 0 : _a.length) && Object.values(props.resolvers).length === 0) {
-            setGuardStatus(ExtendedRouterStatus.SUCCESS);
+            setStatusAndPath(ExtendedRouterStatus.SUCCESS);
         }
     }, [location.pathname]);
     var parentRoute = context.parent;
@@ -241,7 +246,7 @@ var ExtendedRouter = function (props) {
                 outlet: props.children,
                 routeResolverInfos: resolverInfo,
             } },
-            React.createElement(RouteContext.Consumer, null, function () { return (React.createElement(InnerExtendedRouter, __assign({}, props, { path: componentPath, setResolverInfo: setResolverInfo, setGuardStatus: setGuardStatus, status: status }))); }))); } }));
+            React.createElement(RouteContext.Consumer, null, function () { return (React.createElement(InnerExtendedRouter, __assign({}, props, { path: componentPath, setResolverInfo: setResolverInfo, setGuardStatus: setStatusAndPath, status: storedPath === props.path && !isNullOrUndefined(storedPath) ? status : ExtendedRouterStatus.INITIAL }))); }))); } }));
 };
 var InnerExtendedRouter = function (_a) {
     var path = _a.path, Component = _a.component, redirectUrl = _a.redirectUrl, _b = _a.guards, guards = _b === void 0 ? [] : _b, _c = _a.resolvers, resolvers = _c === void 0 ? {} : _c, setResolverInfo = _a.setResolverInfo, setGuardStatus = _a.setGuardStatus, status = _a.status;
@@ -281,7 +286,7 @@ var InnerExtendedRouter = function (_a) {
         firstRenderRef.current = false;
     }, []);
     if (firstRenderRef.current) {
-        if (status === ExtendedRouterStatus.SUCCESS &&
+        if ([ExtendedRouterStatus.SUCCESS].includes(status) &&
             ((resolvers !== undefined && Object.values(resolvers).length !== 0) || (guards === null || guards === void 0 ? void 0 : guards.length))) {
             setGuardStatus(ExtendedRouterStatus.INITIAL);
         }

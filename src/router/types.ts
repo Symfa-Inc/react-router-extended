@@ -37,7 +37,7 @@ export interface Guard {
 }
 
 export interface Resolver {
-  resolve(): Promise<void> | void;
+  resolve(): Promise<any> | any;
 }
 
 export type Props = RouteComponentProps & ExtendedRouterProps;

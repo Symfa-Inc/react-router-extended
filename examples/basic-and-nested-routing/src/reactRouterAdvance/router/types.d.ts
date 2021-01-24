@@ -30,7 +30,7 @@ export interface Guard {
     redirectUrl?: string;
 }
 export interface Resolver {
-    resolve(): Promise<void> | void;
+    resolve(): Promise<any> | any;
 }
 export declare type Props = RouteComponentProps & ExtendedRouterProps;
 export interface ParentComponentWithChildRoutes {
