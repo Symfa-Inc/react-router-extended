@@ -1,6 +1,7 @@
 /* eslint-disable */
 import React, { useRef, useState, useEffect } from 'react';
 import { Route, useLocation, Redirect } from 'react-router-dom';
+import { matchPath } from 'react-router';
 
 /*! *****************************************************************************
 Copyright (c) Microsoft Corporation. All rights reserved.
@@ -240,10 +241,10 @@ var ExtendedRouter = function (props) {
                 outlet: props.children,
                 routeResolverInfos: resolverInfo,
             } },
-            React.createElement(RouteContext.Consumer, null, function () { return (React.createElement(InnerExtendedRouter, __assign({}, props, { setResolverInfo: setResolverInfo, setGuardStatus: setGuardStatus, status: status }))); }))); } }));
+            React.createElement(RouteContext.Consumer, null, function () { return (React.createElement(InnerExtendedRouter, __assign({}, props, { path: componentPath, setResolverInfo: setResolverInfo, setGuardStatus: setGuardStatus, status: status }))); }))); } }));
 };
 var InnerExtendedRouter = function (_a) {
-    var Component = _a.component, redirectUrl = _a.redirectUrl, _b = _a.guards, guards = _b === void 0 ? [] : _b, _c = _a.resolvers, resolvers = _c === void 0 ? {} : _c, setResolverInfo = _a.setResolverInfo, setGuardStatus = _a.setGuardStatus, status = _a.status;
+    var path = _a.path, Component = _a.component, redirectUrl = _a.redirectUrl, _b = _a.guards, guards = _b === void 0 ? [] : _b, _c = _a.resolvers, resolvers = _c === void 0 ? {} : _c, setResolverInfo = _a.setResolverInfo, setGuardStatus = _a.setGuardStatus, status = _a.status;
     var location = useLocation();
     var routerManager = useManager({ resolvers: resolvers, guards: guards, pathname: location.pathname, redirectUrl: redirectUrl });
     var setStatusAndPath = function (status) {
@@ -291,7 +292,15 @@ var InnerExtendedRouter = function (_a) {
     if (status == ExtendedRouterStatus.SUCCESS && firstRenderCondition) {
         return React.createElement(Component, null);
     }
-    if (status === ExtendedRouterStatus.FAIL) {
+    var redirectUrlIsSameAsCurrentPath = matchPath(redirectUrl || '', {
+        path: path,
+        exact: true,
+        strict: false,
+    });
+    if (status === ExtendedRouterStatus.FAIL &&
+        !isNullOrUndefined(redirectUrl) &&
+        redirectUrl !== '' &&
+        !redirectUrlIsSameAsCurrentPath) {
         return React.createElement(Redirect, { to: routerManager.getRedirectUrl() });
     }
     return null;

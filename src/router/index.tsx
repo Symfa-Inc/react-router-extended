@@ -1,5 +1,6 @@
 import React, { FunctionComponent, useEffect, useRef, useState } from 'react';
 import { Redirect, Route, useLocation } from 'react-router-dom';
+import { matchPath } from 'react-router';
 
 import { isNullOrUndefined, setKey } from './helpers';
 import { useManager } from './hooks';
@@ -81,6 +82,7 @@ export const ExtendedRouter: FunctionComponent<ExtendedRouterProps> = props => {
             {() => (
               <InnerExtendedRouter
                 {...props}
+                path={componentPath}
                 setResolverInfo={setResolverInfo}
                 setGuardStatus={setGuardStatus}
                 status={status}
@@ -94,6 +96,7 @@ export const ExtendedRouter: FunctionComponent<ExtendedRouterProps> = props => {
 };
 
 const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
+  path,
   component: Component,
   redirectUrl,
   guards = [],
@@ -147,7 +150,18 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
     return <Component />;
   }
 
-  if (status === ExtendedRouterStatus.FAIL) {
+  const redirectUrlIsSameAsCurrentPath = matchPath(redirectUrl || '', {
+    path: path,
+    exact: true,
+    strict: false,
+  });
+
+  if (
+    status === ExtendedRouterStatus.FAIL &&
+    !isNullOrUndefined(redirectUrl) &&
+    redirectUrl !== '' &&
+    !redirectUrlIsSameAsCurrentPath
+  ) {
     return <Redirect to={routerManager.getRedirectUrl()} />;
   }
 
