@@ -18,6 +18,22 @@ export default [
         format: 'es',
         banner: '/* eslint-disable */',
       },
+
+      {
+        file: 'examples/basic-and-nested-routing/src/reactRouterAdvance/index.js',
+        format: 'es',
+        banner: '/* eslint-disable */',
+      },
+      {
+        file: 'examples/using-of-guards/src/reactRouterAdvance/index.js',
+        format: 'es',
+        banner: '/* eslint-disable */',
+      },
+      {
+        file: 'examples/using-of-resolvers/src/reactRouterAdvance/index.js',
+        format: 'es',
+        banner: '/* eslint-disable */',
+      },
     ],
   },
 ];
