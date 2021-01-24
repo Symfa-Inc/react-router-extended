@@ -1,9 +1,5 @@
 context('Guards', () => {
   describe('Guards basic', () => {
-    // before(() => {
-    //   cy.visit('http://localhost:3000/simple-routing');
-    // });
-
     it('Guards should work consistently and child renders only once and parent renders once', () => {
       cy.visit('http://localhost:3000/guards-consistency-work').then(() => {
         cy.get('#parent-title').should('have.text', 'Parent Title');
@@ -67,6 +63,46 @@ context('Guards', () => {
           expect(loc.pathname).to.eq('/login');
         });
         cy.get('#login-page-title').should('have.text', 'Login page!');
+      });
+    });
+  });
+  describe('Guards smart check', () => {
+    it('Guards should be checked only for direct route and not for children', () => {
+      cy.visit('http://localhost:3000/guards-smart-check').then(() => {
+        cy.get('#parent-1-title').should('have.text', 'Parent Title');
+        cy.get('#parent-1-counter').should('have.text', '1');
+        cy.get('#insert-place').should('be.empty');
+
+        cy.get('#parent-1-link').click();
+        cy.wait(200);
+
+        cy.get('#insert-place').should('have.text', 'first message | ');
+        cy.get('#parent-1-counter').should('have.text', '2');
+
+        cy.get('#parent-2-link-1').click();
+        cy.wait(200);
+
+        cy.get('#insert-place').should('have.text', 'first message | child rendered once!');
+        cy.get('#parent-1-counter').should('have.text', '3');
+
+        cy.get('#parent-2-link-2').click();
+        cy.wait(200);
+
+        cy.get('#insert-place').should('have.text', 'first message | child rendered once!child rendered once!');
+        cy.get('#parent-1-counter').should('have.text', '4');
+
+        cy.get('#parent-2-parent-link').click();
+        cy.wait(200);
+
+        cy.get('#insert-place').should('have.text', 'first message | child rendered once!child rendered once!');
+        cy.get('#parent-1-counter').should('have.text', '5');
+
+        cy.get('#parent-1-link').click();
+        cy.wait(200);
+        cy.get('#insert-place').should(
+          'have.text',
+          'first message | child rendered once!child rendered once!first message | ',
+        );
       });
     });
   });

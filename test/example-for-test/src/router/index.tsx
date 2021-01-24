@@ -6,6 +6,10 @@ import { MockConsistentlyWorkGuard } from '../pages/guards/mock-guard';
 import { ParentGuardConsistencyWork } from '../pages/guards/parent';
 import { ParentFailedGuard } from '../pages/guards/parent-with-failed-guard';
 import { ParentWithRedirect } from '../pages/guards/parent-with-redirect-guard';
+import { Child1GuardSmartCheck } from '../pages/guards/smart-check/child-1';
+import { Child2GuardSmartCheck } from '../pages/guards/smart-check/child-2';
+import { ParentGuardSmartCheck } from '../pages/guards/smart-check/parent';
+import { ParentWithGuardsGuardSmartCheck } from '../pages/guards/smart-check/parent-with-guards';
 import { HomePage } from '../pages/home-page';
 import { LoginPage } from '../pages/login-page';
 import { FirstChildWithParamsDynamicParentDynamicChildDynamicChild } from '../pages/simple-routing-with-params/parent-dynamic-child-dynamic-child-dynamic/first-child';
@@ -232,6 +236,18 @@ export const Routes = () => (
           ]}
           component={ChildGuardConsistencyWork}
         />
+      </ExtendedRouter>
+
+      <ExtendedRouter path="/guards-smart-check" component={ParentGuardSmartCheck}>
+        <ExtendedRouter
+          exact={true}
+          path="/parent-with-guards"
+          guards={[new MockConsistentlyWorkGuard(200, 'first message | ')]}
+          component={ParentWithGuardsGuardSmartCheck}
+        >
+          <ExtendedRouter exact={true} path="/child-1" component={Child1GuardSmartCheck} />
+          <ExtendedRouter exact={true} path="/child-2" component={Child2GuardSmartCheck} />
+        </ExtendedRouter>
       </ExtendedRouter>
     </Switch>
   </Router>
