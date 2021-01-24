@@ -30,27 +30,17 @@ Let's imagine we have a page with 2 nested subpages/tabs.
 #### Example ####
 
 ```js
-<ExtendedRouter
-	path="/page-with-tabs"
-	component={PageWithTabs}
-	childs={[
-		{
-			component: FirstNestedChild,
-			path: '/page-with-tabs/first-nested-child',
-		},
-		{
-			component: SecondNestedChild,
-			path: '/page-with-tabs/second-nested-child',
-		},
-	]}
-/>
+<ExtendedRouter path="/page-with-tabs" component={PageWithTabs}>
+  <ExtendedRouter path="/first-nested-child" component={FirstNestedChild} />
+  <ExtendedRouter path="/second-nested-child" component={SecondNestedChild} />
+</ExtendedRouter>
 
 function PageWithTabs({ childRoutes }) {
   return (
 	<h2>
 		Page with tabs
 		<div class="content">
-			{childRoutes}
+			<ChildRoutes />
 		</div>
 	</h2>
   );
@@ -58,8 +48,8 @@ function PageWithTabs({ childRoutes }) {
 ```
 
 The code for child components is given as an example.
-The functionality of nested routing is implemented in the way that ExtendedRouter has props children that we can pass into its array. Then we should point out to React where it needs to render content. 
-For a parent component, ExtendedRouter provides an extra prop with the childRoutes name, and we just need to put it into the right place to have child routing done.
+The functionality of nested routing is implemented in the way that we can add inside ExtendedRouter nested routes. Then we should point out to React where it needs to render content. 
+For a parent component, ExtendedRouter provides an extra component with the *ChildRoutes* name, and we just need to put it into the right place to have child routing done.
 
 ----------------------------------------------------------------------------------
 
@@ -78,7 +68,7 @@ This is a class containing only one method `canActivate` that should return eith
 
 #### Example: ####
 
-```js
+```ts
 export class LoginGuard implements Guard {
   async canActivate() {
     const isLogin = await chechUserAuth();
@@ -89,12 +79,12 @@ export class LoginGuard implements Guard {
 
 and how we can use it
 
-```js
+```tsx
 <ExtendedRouter
 	path="/page-with-tabs"
 	component={PageWithTabs}
-	guards={[ new LoginGuard () ]},
-	redirectUrl='/login'
+	guards={[ new LoginGuard () ]}
+	redirectUrl="/login"
 />
 ```
 
@@ -109,24 +99,24 @@ Resolver is a class, which must have the `resolve` method and return data, which
 
 #### Example: ####
 
-```js
+```ts
 export class UserInfoResolver implements Resolver {
   async resolve() {
     const userInfo = await getUserInfo();
-    return userInfo ;
+    return userInfo;
   }
 }
 ```
 
 and how we can use it
 
-```js
+```tsx
 <ExtendedRouter
 	path="/page-with-tabs"
 	component={PageWithTabs}
 	resolvers={{
-		userInfo: new UserInfoResolver()
-	 }},
+	  userInfo: new UserInfoResolver()
+	}}
 />
 ```
 
@@ -134,13 +124,14 @@ ExtendedRouter has props with the name resolvers. It is an object with the key t
 
 The `PageWithTabs` component will not be rendered until the resolver has not finished its work.
 
-```js
-function PageWithTabs({userInfo}) {
-	return (
-		<h2>
-			{userInfo.firstName}
-		</h2>
-  	);
+```tsx
+function PageWithTabs() {
+    const resolverData = useResolver();
+    return (
+        <h2>  
+            {resolverData.userInfo.firstName}
+        </h2>
+    );
 }
 ```
 

@@ -1,4 +1,4 @@
-import { ElementType } from 'react';
+import React, { ElementType } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 
 export type RouterPath = string | string[] | undefined;
@@ -9,14 +9,10 @@ export interface ExtendedRouterProps {
   redirectUrl?: string;
   guards?: Guard[];
   resolvers?: PropsResolvers;
-  childs?: ExtendedRouterProps[];
-  redirectToChild?: string;
   exact?: boolean;
-  pageTitle?: string;
-  location?: Location;
-  children?: any;
-  setResolverInfo?: any;
-  setGuardStatus?: any;
+  children?: React.ReactNode;
+  setResolverInfo: (data: any) => void;
+  setGuardStatus: (status: ExtendedRouterStatus) => void;
   status?: ExtendedRouterStatus;
 }
 

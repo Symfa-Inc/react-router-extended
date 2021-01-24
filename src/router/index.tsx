@@ -41,7 +41,10 @@ export const RouteContext = React.createContext<{ parent: any; outlet: any; rout
   routeResolverInfos: {},
 });
 
-export const ExtendedRouter: FunctionComponent<ExtendedRouterProps> = props => {
+export const ExtendedRouter: FunctionComponent<Omit<
+  ExtendedRouterProps,
+  'setResolverInfo' | 'setGuardStatus' | 'status'
+>> = props => {
   const context = React.useContext(RouteContext);
   const [resolverInfo, setResolverInfo] = useState({});
   const [status, setGuardStatus] = useState<ExtendedRouterStatus>(ExtendedRouterStatus.INITIAL);
