@@ -105,5 +105,17 @@ context('Guards', () => {
         );
       });
     });
+
+    it('Direct link should activate guards and render all components only once', () => {
+      cy.visit('http://localhost:3000/guards-smart-check/parent-with-guards/child-1').then(() => {
+        cy.get('#parent-1-title').should('have.text', 'Parent Title');
+        cy.get('#parent-1-counter').should('have.text', '1');
+        cy.get('#parent-2-counter').should('have.text', '1');
+        cy.get('#parent-2-counter').should('have.text', '1');
+
+        cy.get('#insert-place').should('have.text', 'first message | child rendered once!');
+        cy.get('#child-1-title').should('have.text', 'Child title');
+      });
+    });
   });
 });

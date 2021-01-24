@@ -172,6 +172,6 @@ export const ChildRoutes = () => {
   return React.useContext(RouteContext).outlet;
 };
 
-export const useResolver = () => {
+export function useResolver<T = any>(): T {
   return React.useContext(RouteContext).routeResolverInfos;
-};
+}

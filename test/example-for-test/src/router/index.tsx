@@ -12,6 +12,12 @@ import { ParentGuardSmartCheck } from '../pages/guards/smart-check/parent';
 import { ParentWithGuardsGuardSmartCheck } from '../pages/guards/smart-check/parent-with-guards';
 import { HomePage } from '../pages/home-page';
 import { LoginPage } from '../pages/login-page';
+import { PageWithResolvers } from '../pages/resolvers/page';
+import { Child1ResolverSmartCheck } from '../pages/resolvers/smart-check/child-1';
+import { Child2ResolverSmartCheck } from '../pages/resolvers/smart-check/child-2';
+import { ParentResolverSmartCheck } from '../pages/resolvers/smart-check/parent';
+import { ParentWithResolversParentResolverSmartCheck } from '../pages/resolvers/smart-check/parent-with-resolvers';
+import { SmartCheckResolver } from '../pages/resolvers/smart-check/smart-check-resolver';
 import { FirstChildWithParamsDynamicParentDynamicChildDynamicChild } from '../pages/simple-routing-with-params/parent-dynamic-child-dynamic-child-dynamic/first-child';
 import { ParentWithParamsDynamicParentDynamicChildDynamicChild } from '../pages/simple-routing-with-params/parent-dynamic-child-dynamic-child-dynamic/parent';
 import { SecondChildWithParamsDynamicParentDynamicChildDynamicChild } from '../pages/simple-routing-with-params/parent-dynamic-child-dynamic-child-dynamic/second-child';
@@ -247,6 +253,30 @@ export const Routes = () => (
         >
           <ExtendedRouter exact={true} path="/child-1" component={Child1GuardSmartCheck} />
           <ExtendedRouter exact={true} path="/child-2" component={Child2GuardSmartCheck} />
+        </ExtendedRouter>
+      </ExtendedRouter>
+
+      <ExtendedRouter
+        path="/page-with-resolvers"
+        component={PageWithResolvers}
+        resolvers={{
+          mockUserData: new MockDataResolver({ name: 'Joy', lastName: 'Doy' }),
+          mockUiData: new MockDataResolver({ color: 'blue' }),
+        }}
+      />
+
+      <ExtendedRouter path="/resolver-smart-check" component={ParentResolverSmartCheck}>
+        <ExtendedRouter
+          exact={true}
+          path="/parent-with-resolvers"
+          resolvers={{
+            firstResolver: new SmartCheckResolver(500),
+            secondResolver: new SmartCheckResolver(500),
+          }}
+          component={ParentWithResolversParentResolverSmartCheck}
+        >
+          <ExtendedRouter exact={true} path="/child-1" component={Child1ResolverSmartCheck} />
+          <ExtendedRouter exact={true} path="/child-2" component={Child2ResolverSmartCheck} />
         </ExtendedRouter>
       </ExtendedRouter>
     </Switch>
