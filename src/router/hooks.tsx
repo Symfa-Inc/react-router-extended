@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { ExtendedRouterStatus, Guard, PropsResolvers } from './types';
+import { ExtendedRouteStatus, Guard, PropsResolvers } from './types';
 
 interface UserManager {
   resolvers: PropsResolvers;
@@ -23,7 +23,7 @@ export function useManager({ resolvers, guards, pathname, redirectUrl }: UserMan
     };
   }
 
-  async function checkGuards(pathname: string): Promise<ExtendedRouterStatus> {
+  async function checkGuards(pathname: string): Promise<ExtendedRouteStatus> {
     const result: { isOk: boolean; redirectUrl?: string }[] = [];
     for (const guard of infoAboutComponent.current[pathname].guards) {
       const hasFailInGuard = result.some(r => !r.isOk);
@@ -47,7 +47,7 @@ export function useManager({ resolvers, guards, pathname, redirectUrl }: UserMan
       };
     }
 
-    return !firstFailedGuard ? ExtendedRouterStatus.SUCCESS : ExtendedRouterStatus.FAIL;
+    return !firstFailedGuard ? ExtendedRouteStatus.SUCCESS : ExtendedRouteStatus.FAIL;
   }
 
   async function loadResolvers() {
@@ -61,19 +61,7 @@ export function useManager({ resolvers, guards, pathname, redirectUrl }: UserMan
       const key = keys[index];
       return { ...acc, [key]: next };
     }, {});
-
-    // infoAboutComponent.current = {
-    //   ...infoAboutComponent.current,
-    //   [pathname]: {
-    //     ...infoAboutComponent.current[pathname],
-    //     props,
-    //   },
-    // };
   }
-
-  // function getProps(pathname: string) {
-  //   return infoAboutComponent.current[pathname].props;
-  // }
 
   function getRedirectUrl(): string {
     if (infoAboutComponent.current[pathname].redirectUrl) {

@@ -45,7 +45,7 @@ import { SecondStaticChild } from '../pages/tab-page/second-static-child-page';
 
 import { StaticChild } from '../pages/tab-page/static-child-page';
 
-import { ExtendedRouter } from '../reactRouterAdvance';
+import { ExtendedRoute } from '../reactRouterAdvance';
 
 import { MockDataResolver } from '../resolvers/mock-data.resolver';
 
@@ -63,14 +63,14 @@ const NestedTest = () => {
 export const Routes = () => (
   <Router history={history}>
     <Switch>
-      <ExtendedRouter path="/login" exact={true} component={LoginPage} />
-      <ExtendedRouter path="/" exact={true} component={HomePage} />
+      <ExtendedRoute path="/login" exact={true} component={LoginPage} />
+      <ExtendedRoute path="/" exact={true} component={HomePage} />
 
-      <ExtendedRouter path="/tab-page" pageTitle="Tab page title" component={TabPage} guards={[new MockGuard(true)]}>
-        <ExtendedRouter component={StaticChild} path={'/static-child'}>
-          <ExtendedRouter component={NestedTest} path={'/nested'} />
-        </ExtendedRouter>
-        <ExtendedRouter
+      <ExtendedRoute path="/tab-page" component={TabPage} guards={[new MockGuard(true)]}>
+        <ExtendedRoute component={StaticChild} path={'/static-child'}>
+          <ExtendedRoute component={NestedTest} path={'/nested'} />
+        </ExtendedRoute>
+        <ExtendedRoute
           component={SecondStaticChild}
           path={'/second-static-child'}
           guards={[new MockGuard(true)]}
@@ -79,58 +79,58 @@ export const Routes = () => (
             mockUiData: new MockDataResolver({ color: 'blue' }),
           }}
         />
-      </ExtendedRouter>
+      </ExtendedRoute>
 
-      <ExtendedRouter path="/simple-routing" component={SimpleRoutingParent1}>
-        <ExtendedRouter exact={true} path="/nested-child" component={SimpleRoutingParent2}>
-          <ExtendedRouter exact={true} path="/nested-child2" component={SimpleRoutingParent3}>
-            <ExtendedRouter exact={true} path="/nested-child3" component={LastChild} />
-          </ExtendedRouter>
-        </ExtendedRouter>
-      </ExtendedRouter>
+      <ExtendedRoute path="/simple-routing" component={SimpleRoutingParent1}>
+        <ExtendedRoute exact={true} path="/nested-child" component={SimpleRoutingParent2}>
+          <ExtendedRoute exact={true} path="/nested-child2" component={SimpleRoutingParent3}>
+            <ExtendedRoute exact={true} path="/nested-child3" component={LastChild} />
+          </ExtendedRoute>
+        </ExtendedRoute>
+      </ExtendedRoute>
 
-      <ExtendedRouter component={ParentWithTwoChildren} path="/simple-routing-two-children">
-        <ExtendedRouter exact={true} path="/first-children" component={FirstChild} />
-        <ExtendedRouter exact={true} path="/second-children" component={SecondChild} />
-      </ExtendedRouter>
-      <ExtendedRouter component={ParentWithTwoChildrenDynamic} path="/routing-with-params-two-children">
-        <ExtendedRouter exact={true} path="/:id/first-child" component={FirstDynamicChild} />
-        <ExtendedRouter exact={true} path="/:id/second-child" component={SecondDynamicChild} />
-      </ExtendedRouter>
+      <ExtendedRoute component={ParentWithTwoChildren} path="/simple-routing-two-children">
+        <ExtendedRoute exact={true} path="/first-children" component={FirstChild} />
+        <ExtendedRoute exact={true} path="/second-children" component={SecondChild} />
+      </ExtendedRoute>
+      <ExtendedRoute component={ParentWithTwoChildrenDynamic} path="/routing-with-params-two-children">
+        <ExtendedRoute exact={true} path="/:id/first-child" component={FirstDynamicChild} />
+        <ExtendedRoute exact={true} path="/:id/second-child" component={SecondDynamicChild} />
+      </ExtendedRoute>
 
-      <ExtendedRouter path="/routing-with-params-dynamic-child" component={ParentWithParamsDynamicChild}>
-        <ExtendedRouter exact={true} path="/:id" component={ChildWithParamsDynamicChild} />
-      </ExtendedRouter>
+      <ExtendedRoute path="/routing-with-params-dynamic-child" component={ParentWithParamsDynamicChild}>
+        <ExtendedRoute exact={true} path="/:id" component={ChildWithParamsDynamicChild} />
+      </ExtendedRoute>
 
-      <ExtendedRouter
+      <ExtendedRoute
         path="/routing-with-params-dynamic-child-dynamic-parent/:id"
         component={ParentWithParamsDynamicChildDynamicParent}
       >
-        <ExtendedRouter exact={true} path="/:id" component={ChildWithParamsDynamicChildDynamicParent} />
-      </ExtendedRouter>
+        <ExtendedRoute exact={true} path="/:id" component={ChildWithParamsDynamicChildDynamicParent} />
+      </ExtendedRoute>
 
-      <ExtendedRouter
+      <ExtendedRoute
         path="/routing-with-params-dynamic-child-static-parent/:id"
         component={ParentWithParamsDynamicChildStaticParent}
       >
-        <ExtendedRouter exact={true} path="/child" component={ChildWithParamsDynamicChildStaticParent} />
-      </ExtendedRouter>
+        <ExtendedRoute exact={true} path="/child" component={ChildWithParamsDynamicChildStaticParent} />
+      </ExtendedRoute>
 
-      <ExtendedRouter
+      <ExtendedRoute
         path="/routing-with-params-dynamic-child-dynamic-parent-dynamic-child/:id"
         component={ParentWithParamsDynamicParentDynamicChildDynamicChild}
       >
-        <ExtendedRouter exact={true} path="/:id" component={FirstChildWithParamsDynamicParentDynamicChildDynamicChild}>
-          <ExtendedRouter
+        <ExtendedRoute exact={true} path="/:id" component={FirstChildWithParamsDynamicParentDynamicChildDynamicChild}>
+          <ExtendedRoute
             exact={true}
             path="/:id"
             component={SecondChildWithParamsDynamicParentDynamicChildDynamicChild}
           />
-        </ExtendedRouter>
-      </ExtendedRouter>
+        </ExtendedRoute>
+      </ExtendedRoute>
 
-      <ExtendedRouter path="/guards-consistency-work" component={ParentGuardConsistencyWork}>
-        <ExtendedRouter
+      <ExtendedRoute path="/guards-consistency-work" component={ParentGuardConsistencyWork}>
+        <ExtendedRoute
           exact={true}
           path="/child-with-guards"
           guards={[
@@ -140,9 +140,9 @@ export const Routes = () => (
           ]}
           component={ChildGuardConsistencyWork}
         />
-      </ExtendedRouter>
-      <ExtendedRouter path="/guards-check-failed" component={ParentFailedGuard}>
-        <ExtendedRouter
+      </ExtendedRoute>
+      <ExtendedRoute path="/guards-check-failed" component={ParentFailedGuard}>
+        <ExtendedRoute
           exact={true}
           path="/:id/child-with-guards"
           redirectUrl="/guards-check-failed/1234/child-with-guards"
@@ -153,10 +153,10 @@ export const Routes = () => (
           ]}
           component={ChildGuardConsistencyWork}
         />
-      </ExtendedRouter>
+      </ExtendedRoute>
 
-      <ExtendedRouter path="/guards-check-failed-with-redirect" component={ParentWithRedirect}>
-        <ExtendedRouter
+      <ExtendedRoute path="/guards-check-failed-with-redirect" component={ParentWithRedirect}>
+        <ExtendedRoute
           exact={true}
           path="/:id/child-with-guards"
           redirectUrl="/login"
@@ -167,21 +167,21 @@ export const Routes = () => (
           ]}
           component={ChildGuardConsistencyWork}
         />
-      </ExtendedRouter>
+      </ExtendedRoute>
 
-      <ExtendedRouter path="/guards-smart-check" component={ParentGuardSmartCheck}>
-        <ExtendedRouter
+      <ExtendedRoute path="/guards-smart-check" component={ParentGuardSmartCheck}>
+        <ExtendedRoute
           exact={true}
           path="/parent-with-guards"
           guards={[new MockConsistentlyWorkGuard(200, 'first message | ')]}
           component={ParentWithGuardsGuardSmartCheck}
         >
-          <ExtendedRouter exact={true} path="/child-1" component={Child1GuardSmartCheck} />
-          <ExtendedRouter exact={true} path="/child-2" component={Child2GuardSmartCheck} />
-        </ExtendedRouter>
-      </ExtendedRouter>
+          <ExtendedRoute exact={true} path="/child-1" component={Child1GuardSmartCheck} />
+          <ExtendedRoute exact={true} path="/child-2" component={Child2GuardSmartCheck} />
+        </ExtendedRoute>
+      </ExtendedRoute>
 
-      <ExtendedRouter
+      <ExtendedRoute
         path="/page-with-resolvers"
         component={PageWithResolvers}
         resolvers={{
@@ -190,8 +190,8 @@ export const Routes = () => (
         }}
       />
 
-      <ExtendedRouter path="/resolver-smart-check" component={ParentResolverSmartCheck}>
-        <ExtendedRouter
+      <ExtendedRoute path="/resolver-smart-check" component={ParentResolverSmartCheck}>
+        <ExtendedRoute
           exact={true}
           path="/parent-with-resolvers"
           resolvers={{
@@ -200,19 +200,19 @@ export const Routes = () => (
           }}
           component={ParentWithResolversParentResolverSmartCheck}
         >
-          <ExtendedRouter exact={true} path="/child-1" component={Child1ResolverSmartCheck} />
-          <ExtendedRouter exact={true} path="/child-2" component={Child2ResolverSmartCheck} />
-        </ExtendedRouter>
-      </ExtendedRouter>
+          <ExtendedRoute exact={true} path="/child-1" component={Child1ResolverSmartCheck} />
+          <ExtendedRoute exact={true} path="/child-2" component={Child2ResolverSmartCheck} />
+        </ExtendedRoute>
+      </ExtendedRoute>
 
-      <ExtendedRouter
+      <ExtendedRoute
         component={HomePageRoute}
         path="/guard-auto-redirect"
         redirectUrl="/login-form"
         exact={true}
         guards={[new LoginGuard()]}
       />
-      <ExtendedRouter component={GuardLoginPage} path="/login-form" exact={true} />
+      <ExtendedRoute component={GuardLoginPage} path="/login-form" exact={true} />
     </Switch>
   </Router>
 );

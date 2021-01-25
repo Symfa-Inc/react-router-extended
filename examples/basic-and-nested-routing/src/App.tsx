@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link, Router, Switch } from 'react-router-dom';
-import { ExtendedRouter, ChildRoutes } from './reactRouterAdvance';
+import { ExtendedRoute, ChildRoutes } from './reactRouterAdvance';
 import { createBrowserHistory } from 'history';
 
 export const browserHistory = createBrowserHistory();
@@ -61,16 +61,16 @@ const App = () => {
   return (
     <Router history={browserHistory}>
       <Switch>
-        <ExtendedRouter path="/" exact={true} component={HomePageRoute} />
+        <ExtendedRoute path="/" exact={true} component={HomePageRoute} />
 
-        <ExtendedRouter path="/about" component={AboutPage}>
-          <ExtendedRouter path="/about-us" component={AboutUsPage} />
+        <ExtendedRoute path="/about" component={AboutPage}>
+          <ExtendedRoute path="/about-us" component={AboutUsPage} />
 
-          <ExtendedRouter path="/about-company" component={AboutCompanyPage}>
-            <ExtendedRouter path="/news" component={AboutCompanyNewsPage} />
+          <ExtendedRoute path="/about-company" component={AboutCompanyPage}>
+            <ExtendedRoute path="/news" component={AboutCompanyNewsPage} />
             {/*  You can keep nesting if you need so*/}
-          </ExtendedRouter>
-        </ExtendedRouter>
+          </ExtendedRoute>
+        </ExtendedRoute>
       </Switch>
     </Router>
   );

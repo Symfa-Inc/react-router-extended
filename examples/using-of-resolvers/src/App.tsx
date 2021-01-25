@@ -1,6 +1,6 @@
 import React from 'react';
 import { Router, Switch } from 'react-router-dom';
-import { ExtendedRouter, Resolver, sleep, useResolver } from './reactRouterAdvance';
+import { ExtendedRoute, Resolver, sleep, useResolver } from './reactRouterAdvance';
 import { createBrowserHistory } from 'history';
 
 interface UserInfo {
@@ -32,7 +32,7 @@ const App = () => {
   return (
     <Router history={browserHistory}>
       <Switch>
-        <ExtendedRouter
+        <ExtendedRoute
           component={HomePageRoute}
           path="/"
           resolvers={{

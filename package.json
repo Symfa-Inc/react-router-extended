@@ -1,6 +1,6 @@
 {
   "name": "@wellyes/react-router-extended",
-  "version": "2.0",
+  "version": "2.0.1",
   "main": "dist/index.cjs.js",
   "module": "dist/index.esm.js",
   "keywords": [

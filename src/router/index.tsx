@@ -4,7 +4,7 @@ import { Redirect, Route, useLocation } from 'react-router-dom';
 
 import { isNullOrUndefined, setKey } from './helpers';
 import { useManager } from './hooks';
-import { ExtendedRouterProps, ExtendedRouterStatus } from './types';
+import { ExtendedRouteProps, ExtendedRouteStatus } from './types';
 
 class RouteCollector {
   private children: RouteCollector[] = [];
@@ -41,22 +41,22 @@ export const RouteContext = React.createContext<{ parent: any; outlet: any; rout
   routeResolverInfos: {},
 });
 
-export const ExtendedRouter: FunctionComponent<Omit<
-  ExtendedRouterProps,
+export const ExtendedRoute: FunctionComponent<Omit<
+  ExtendedRouteProps,
   'setResolverInfo' | 'setGuardStatus' | 'status'
 >> = props => {
   const context = React.useContext(RouteContext);
   const [resolverInfo, setResolverInfo] = useState({});
-  const [status, setGuardStatus] = useState<ExtendedRouterStatus>(ExtendedRouterStatus.INITIAL);
+  const [status, setGuardStatus] = useState<ExtendedRouteStatus>(ExtendedRouteStatus.INITIAL);
   const [storedPath, setPath] = useState<string>();
 
-  const setStatusAndPath = (newStatus: ExtendedRouterStatus) => {
+  const setStatusAndPath = (newStatus: ExtendedRouteStatus) => {
     setGuardStatus(newStatus);
     setPath(props.path);
   };
   useEffect(() => {
     if (props.resolvers !== undefined && !props.guards?.length && Object.values(props.resolvers).length === 0) {
-      setStatusAndPath(ExtendedRouterStatus.SUCCESS);
+      setStatusAndPath(ExtendedRouteStatus.SUCCESS);
     }
   }, [location.pathname]);
   const parentRoute = context.parent;
@@ -94,7 +94,7 @@ export const ExtendedRouter: FunctionComponent<Omit<
                 setResolverInfo={setResolverInfo}
                 setGuardStatus={setStatusAndPath}
                 status={
-                  storedPath === props.path && !isNullOrUndefined(storedPath) ? status : ExtendedRouterStatus.INITIAL
+                  storedPath === props.path && !isNullOrUndefined(storedPath) ? status : ExtendedRouteStatus.INITIAL
                 }
               />
             )}
@@ -105,7 +105,7 @@ export const ExtendedRouter: FunctionComponent<Omit<
   );
 };
 
-const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
+const InnerExtendedRouter: FunctionComponent<ExtendedRouteProps> = ({
   path,
   component: Component,
   redirectUrl,
@@ -120,15 +120,15 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
 
   const routerManager = useManager({ resolvers, guards, pathname: location.pathname, redirectUrl });
 
-  const setStatusAndPath = (status: ExtendedRouterStatus) => {
+  const setStatusAndPath = (status: ExtendedRouteStatus) => {
     setGuardStatus(status);
   };
   useEffect(() => {
     (async () => {
-      const needToLoadExtraInfoForComponent = status === ExtendedRouterStatus.INITIAL;
+      const needToLoadExtraInfoForComponent = status === ExtendedRouteStatus.INITIAL;
       if (needToLoadExtraInfoForComponent) {
         const guardStatus = await routerManager.checkGuards(location.pathname);
-        if (guardStatus === ExtendedRouterStatus.SUCCESS || !guards?.length) {
+        if (guardStatus === ExtendedRouteStatus.SUCCESS || !guards?.length) {
           if (Object.keys(resolvers).length) {
             const resolverData = await routerManager.loadResolvers();
             setResolverInfo(resolverData);
@@ -145,10 +145,10 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
   }, []);
   if (firstRenderRef.current) {
     if (
-      [ExtendedRouterStatus.SUCCESS].includes(status as ExtendedRouterStatus) &&
+      [ExtendedRouteStatus.SUCCESS].includes(status as ExtendedRouteStatus) &&
       ((resolvers !== undefined && Object.values(resolvers).length !== 0) || guards?.length)
     ) {
-      setGuardStatus(ExtendedRouterStatus.INITIAL);
+      setGuardStatus(ExtendedRouteStatus.INITIAL);
     }
   }
 
@@ -156,7 +156,7 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
     (!isNullOrUndefined(resolvers) && Object.values(resolvers).length !== 0) ||
     (Array.isArray(guards) && guards.length !== 0);
   const firstRenderCondition = hasGuardsOrResolvers ? !firstRenderRef.current : true;
-  if (status == ExtendedRouterStatus.SUCCESS && firstRenderCondition) {
+  if (status == ExtendedRouteStatus.SUCCESS && firstRenderCondition) {
     return <Component />;
   }
 
@@ -167,7 +167,7 @@ const InnerExtendedRouter: FunctionComponent<ExtendedRouterProps> = ({
   });
 
   if (
-    status === ExtendedRouterStatus.FAIL &&
+    status === ExtendedRouteStatus.FAIL &&
     !isNullOrUndefined(redirectUrl) &&
     redirectUrl !== '' &&
     !redirectUrlIsSameAsCurrentPath

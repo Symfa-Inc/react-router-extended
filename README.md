@@ -30,10 +30,10 @@ Let's imagine we have a page with 2 nested subpages/tabs.
 #### Example ####
 
 ```js
-<ExtendedRouter path="/page-with-tabs" component={PageWithTabs}>
-  <ExtendedRouter path="/first-nested-child" component={FirstNestedChild} />
-  <ExtendedRouter path="/second-nested-child" component={SecondNestedChild} />
-</ExtendedRouter>
+<ExtendedRoute path="/page-with-tabs" component={PageWithTabs}>
+  <ExtendedRoute path="/first-nested-child" component={FirstNestedChild} />
+  <ExtendedRoute path="/second-nested-child" component={SecondNestedChild} />
+</ExtendedRoute>
 
 function PageWithTabs({ childRoutes }) {
   return (
@@ -48,8 +48,8 @@ function PageWithTabs({ childRoutes }) {
 ```
 
 The code for child components is given as an example.
-The functionality of nested routing is implemented in the way that we can add inside ExtendedRouter nested routes. Then we should point out to React where it needs to render content. 
-For a parent component, ExtendedRouter provides an extra component with the *ChildRoutes* name, and we just need to put it into the right place to have child routing done.
+The functionality of nested routing is implemented in the way that we can add inside ExtendedRoute nested routes. Then we should point out to React where it needs to render content. 
+For a parent component, ExtendedRoute provides an extra component with the *ChildRoutes* name, and we just need to put it into the right place to have child routing done.
 
 ----------------------------------------------------------------------------------
 
@@ -80,7 +80,7 @@ export class LoginGuard implements Guard {
 and how we can use it
 
 ```tsx
-<ExtendedRouter
+<ExtendedRoute
 	path="/page-with-tabs"
 	component={PageWithTabs}
 	guards={[ new LoginGuard () ]}
@@ -88,7 +88,7 @@ and how we can use it
 />
 ```
 
-ExtendedRouter has prop guards. They are array, which can be used with combining of guards. 
+ExtendedRoute has prop guards. They are array, which can be used with combining of guards. 
 Guards are called consistently, from left to right in the order they are placed in an array. 
 As soon as at least one guard returns false, the chain is broken and stopped, and redirect happens and we need to specify on which URL it will be it though prop `redirectUrl` as we did in the example above.
 
@@ -111,7 +111,7 @@ export class UserInfoResolver implements Resolver {
 and how we can use it
 
 ```tsx
-<ExtendedRouter
+<ExtendedRoute
 	path="/page-with-tabs"
 	component={PageWithTabs}
 	resolvers={{
@@ -120,7 +120,7 @@ and how we can use it
 />
 ```
 
-ExtendedRouter has props with the name resolvers. It is an object with the key that is the prop name in the component and which value should be the instance of our resolver. In this case, it is a new `UserInfoResolver()`.
+ExtendedRoute has props with the name resolvers. It is an object with the key that is the prop name in the component and which value should be the instance of our resolver. In this case, it is a new `UserInfoResolver()`.
 
 The `PageWithTabs` component will not be rendered until the resolver has not finished its work.
 
@@ -135,6 +135,6 @@ function PageWithTabs() {
 }
 ```
 
-In component props from the resolver with the name that we have specified in ExtendedRouter are passed to the component.
+In component props from the resolver with the name that we have specified in ExtendedRoute are passed to the component.
 
 For a more detailed example, follow the [link](https://gitlab.aisnovations.com/modules/react-router-extended/-/tree/master/examples%2Ftest).

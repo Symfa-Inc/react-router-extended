@@ -1,7 +1,7 @@
 import { createBrowserHistory } from 'history';
 import React from 'react';
 import { Link, Router, Switch, useHistory } from 'react-router-dom';
-import { ExtendedRouter, Guard } from './reactRouterAdvance';
+import { ExtendedRoute, Guard } from './reactRouterAdvance';
 
 export const browserHistory = createBrowserHistory();
 
@@ -54,14 +54,14 @@ const App = () => {
   return (
     <Router history={browserHistory}>
       <Switch>
-        <ExtendedRouter
+        <ExtendedRoute
           component={HomePageRoute}
           path="/"
           redirectUrl="/login"
           exact={true}
           guards={[new LoginGuard()]}
         />
-        <ExtendedRouter component={LoginPage} path="/login" exact={true} />
+        <ExtendedRoute component={LoginPage} path="/login" exact={true} />
       </Switch>
     </Router>
   );

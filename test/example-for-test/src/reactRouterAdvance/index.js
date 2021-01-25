@@ -80,13 +80,15 @@ var setKey = function (path) {
     }
     return path;
 };
+//# sourceMappingURL=helpers.js.map
 
-var ExtendedRouterStatus;
-(function (ExtendedRouterStatus) {
-    ExtendedRouterStatus[ExtendedRouterStatus["INITIAL"] = 1] = "INITIAL";
-    ExtendedRouterStatus[ExtendedRouterStatus["SUCCESS"] = 2] = "SUCCESS";
-    ExtendedRouterStatus[ExtendedRouterStatus["FAIL"] = 3] = "FAIL";
-})(ExtendedRouterStatus || (ExtendedRouterStatus = {}));
+var ExtendedRouteStatus;
+(function (ExtendedRouteStatus) {
+    ExtendedRouteStatus[ExtendedRouteStatus["INITIAL"] = 1] = "INITIAL";
+    ExtendedRouteStatus[ExtendedRouteStatus["SUCCESS"] = 2] = "SUCCESS";
+    ExtendedRouteStatus[ExtendedRouteStatus["FAIL"] = 3] = "FAIL";
+})(ExtendedRouteStatus || (ExtendedRouteStatus = {}));
+//# sourceMappingURL=types.js.map
 
 function useManager(_a) {
     var resolvers = _a.resolvers, guards = _a.guards, pathname = _a.pathname, redirectUrl = _a.redirectUrl;
@@ -138,7 +140,7 @@ function useManager(_a) {
                         if (firstFailedGuard && firstFailedGuard.redirectUrl) {
                             infoAboutComponent.current[pathname] = __assign(__assign({}, infoAboutComponent.current[pathname]), { redirectUrl: firstFailedGuard.redirectUrl });
                         }
-                        return [2 /*return*/, !firstFailedGuard ? ExtendedRouterStatus.SUCCESS : ExtendedRouterStatus.FAIL];
+                        return [2 /*return*/, !firstFailedGuard ? ExtendedRouteStatus.SUCCESS : ExtendedRouteStatus.FAIL];
                 }
             });
         });
@@ -166,9 +168,6 @@ function useManager(_a) {
             });
         });
     }
-    // function getProps(pathname: string) {
-    //   return infoAboutComponent.current[pathname].props;
-    // }
     function getRedirectUrl() {
         if (infoAboutComponent.current[pathname].redirectUrl) {
             return infoAboutComponent.current[pathname].redirectUrl;
@@ -214,10 +213,10 @@ var RouteContext = React.createContext({
     outlet: null,
     routeResolverInfos: {},
 });
-var ExtendedRouter = function (props) {
+var ExtendedRoute = function (props) {
     var context = React.useContext(RouteContext);
     var _a = useState({}), resolverInfo = _a[0], setResolverInfo = _a[1];
-    var _b = useState(ExtendedRouterStatus.INITIAL), status = _b[0], setGuardStatus = _b[1];
+    var _b = useState(ExtendedRouteStatus.INITIAL), status = _b[0], setGuardStatus = _b[1];
     var _c = useState(), storedPath = _c[0], setPath = _c[1];
     var setStatusAndPath = function (newStatus) {
         setGuardStatus(newStatus);
@@ -226,7 +225,7 @@ var ExtendedRouter = function (props) {
     useEffect(function () {
         var _a;
         if (props.resolvers !== undefined && !((_a = props.guards) === null || _a === void 0 ? void 0 : _a.length) && Object.values(props.resolvers).length === 0) {
-            setStatusAndPath(ExtendedRouterStatus.SUCCESS);
+            setStatusAndPath(ExtendedRouteStatus.SUCCESS);
         }
     }, [location.pathname]);
     var parentRoute = context.parent;
@@ -246,7 +245,7 @@ var ExtendedRouter = function (props) {
                 outlet: props.children,
                 routeResolverInfos: resolverInfo,
             } },
-            React.createElement(RouteContext.Consumer, null, function () { return (React.createElement(InnerExtendedRouter, __assign({}, props, { path: componentPath, setResolverInfo: setResolverInfo, setGuardStatus: setStatusAndPath, status: storedPath === props.path && !isNullOrUndefined(storedPath) ? status : ExtendedRouterStatus.INITIAL }))); }))); } }));
+            React.createElement(RouteContext.Consumer, null, function () { return (React.createElement(InnerExtendedRouter, __assign({}, props, { path: componentPath, setResolverInfo: setResolverInfo, setGuardStatus: setStatusAndPath, status: storedPath === props.path && !isNullOrUndefined(storedPath) ? status : ExtendedRouteStatus.INITIAL }))); }))); } }));
 };
 var InnerExtendedRouter = function (_a) {
     var path = _a.path, Component = _a.component, redirectUrl = _a.redirectUrl, _b = _a.guards, guards = _b === void 0 ? [] : _b, _c = _a.resolvers, resolvers = _c === void 0 ? {} : _c, setResolverInfo = _a.setResolverInfo, setGuardStatus = _a.setGuardStatus, status = _a.status;
@@ -261,12 +260,12 @@ var InnerExtendedRouter = function (_a) {
             return __generator(this, function (_a) {
                 switch (_a.label) {
                     case 0:
-                        needToLoadExtraInfoForComponent = status === ExtendedRouterStatus.INITIAL;
+                        needToLoadExtraInfoForComponent = status === ExtendedRouteStatus.INITIAL;
                         if (!needToLoadExtraInfoForComponent) return [3 /*break*/, 4];
                         return [4 /*yield*/, routerManager.checkGuards(location.pathname)];
                     case 1:
                         guardStatus = _a.sent();
-                        if (!(guardStatus === ExtendedRouterStatus.SUCCESS || !(guards === null || guards === void 0 ? void 0 : guards.length))) return [3 /*break*/, 3];
+                        if (!(guardStatus === ExtendedRouteStatus.SUCCESS || !(guards === null || guards === void 0 ? void 0 : guards.length))) return [3 /*break*/, 3];
                         if (!Object.keys(resolvers).length) return [3 /*break*/, 3];
                         return [4 /*yield*/, routerManager.loadResolvers()];
                     case 2:
@@ -286,15 +285,15 @@ var InnerExtendedRouter = function (_a) {
         firstRenderRef.current = false;
     }, []);
     if (firstRenderRef.current) {
-        if ([ExtendedRouterStatus.SUCCESS].includes(status) &&
+        if ([ExtendedRouteStatus.SUCCESS].includes(status) &&
             ((resolvers !== undefined && Object.values(resolvers).length !== 0) || (guards === null || guards === void 0 ? void 0 : guards.length))) {
-            setGuardStatus(ExtendedRouterStatus.INITIAL);
+            setGuardStatus(ExtendedRouteStatus.INITIAL);
         }
     }
     var hasGuardsOrResolvers = (!isNullOrUndefined(resolvers) && Object.values(resolvers).length !== 0) ||
         (Array.isArray(guards) && guards.length !== 0);
     var firstRenderCondition = hasGuardsOrResolvers ? !firstRenderRef.current : true;
-    if (status == ExtendedRouterStatus.SUCCESS && firstRenderCondition) {
+    if (status == ExtendedRouteStatus.SUCCESS && firstRenderCondition) {
         return React.createElement(Component, null);
     }
     var redirectUrlIsSameAsCurrentPath = matchPath(redirectUrl || '', {
@@ -302,7 +301,7 @@ var InnerExtendedRouter = function (_a) {
         exact: true,
         strict: false,
     });
-    if (status === ExtendedRouterStatus.FAIL &&
+    if (status === ExtendedRouteStatus.FAIL &&
         !isNullOrUndefined(redirectUrl) &&
         redirectUrl !== '' &&
         !redirectUrlIsSameAsCurrentPath) {
@@ -317,4 +316,4 @@ function useResolver() {
     return React.useContext(RouteContext).routeResolverInfos;
 }
 
-export { ChildRoutes, ExtendedRouter, sleep, useResolver };
+export { ChildRoutes, ExtendedRoute, sleep, useResolver };

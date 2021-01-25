@@ -1,7 +1,7 @@
 import React, { ElementType } from 'react';
 import { RouteComponentProps } from 'react-router-dom';
 export declare type RouterPath = string | string[] | undefined;
-export interface ExtendedRouterProps {
+export interface ExtendedRouteProps {
     path: string;
     component: ElementType;
     redirectUrl?: string;
@@ -10,10 +10,10 @@ export interface ExtendedRouterProps {
     exact?: boolean;
     children?: React.ReactNode;
     setResolverInfo: (data: any) => void;
-    setGuardStatus: (status: ExtendedRouterStatus) => void;
-    status?: ExtendedRouterStatus;
+    setGuardStatus: (status: ExtendedRouteStatus) => void;
+    status?: ExtendedRouteStatus;
 }
-export declare enum ExtendedRouterStatus {
+export declare enum ExtendedRouteStatus {
     INITIAL = 1,
     SUCCESS = 2,
     FAIL = 3
@@ -28,7 +28,7 @@ export interface Guard {
 export interface Resolver {
     resolve(): Promise<any> | any;
 }
-export declare type Props = RouteComponentProps & ExtendedRouterProps;
+export declare type Props = RouteComponentProps & ExtendedRouteProps;
 export interface ParentComponentWithChildRoutes {
     childRoutes: JSX.Element[];
 }
