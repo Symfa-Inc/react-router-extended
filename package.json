@@ -11,7 +11,7 @@
     "react-extended-router"
   ],
   "repository": {
-    "url": "https://gitlab.aisnovations.com/modules/react-router-extended",
+    "url": "https://github.com/Aiscom-LLC/react-router-extended.git",
     "type": "git"
   },
   "license": "MIT",
