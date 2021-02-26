@@ -172,7 +172,6 @@ function useManager(_a) {
         if (infoAboutComponent.current[pathname].redirectUrl) {
             return infoAboutComponent.current[pathname].redirectUrl;
         }
-        return '/';
     }
     return { loadResolvers: loadResolvers, checkGuards: checkGuards, getRedirectUrl: getRedirectUrl };
 }
@@ -302,11 +301,12 @@ var InnerExtendedRouter = function (_a) {
         exact: true,
         strict: false,
     });
+    var totalRedirectUrl = routerManager.getRedirectUrl();
     if (status === ExtendedRouteStatus.FAIL &&
-        !isNullOrUndefined(redirectUrl) &&
-        redirectUrl !== '' &&
+        !isNullOrUndefined(totalRedirectUrl) &&
+        totalRedirectUrl !== '' &&
         !redirectUrlIsSameAsCurrentPath) {
-        return React.createElement(Redirect, { to: routerManager.getRedirectUrl() });
+        return React.createElement(Redirect, { to: totalRedirectUrl });
     }
     return null;
 };

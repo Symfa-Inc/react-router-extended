@@ -163,13 +163,14 @@ const InnerExtendedRouter: FunctionComponent<InnerExtendedRouteProps> = ({
     strict: false,
   });
 
+  const totalRedirectUrl = routerManager.getRedirectUrl();
   if (
     status === ExtendedRouteStatus.FAIL &&
-    !isNullOrUndefined(redirectUrl) &&
-    redirectUrl !== '' &&
+    !isNullOrUndefined(totalRedirectUrl) &&
+    totalRedirectUrl !== '' &&
     !redirectUrlIsSameAsCurrentPath
   ) {
-    return <Redirect to={routerManager.getRedirectUrl()} />;
+    return <Redirect to={totalRedirectUrl as string} />;
   }
 
   return null;

@@ -63,11 +63,10 @@ export function useManager({ resolvers, guards, pathname, redirectUrl }: UserMan
     }, {});
   }
 
-  function getRedirectUrl(): string {
+  function getRedirectUrl(): string | undefined {
     if (infoAboutComponent.current[pathname].redirectUrl) {
       return infoAboutComponent.current[pathname].redirectUrl as string;
-    }
-    return '/';
+    };
   }
 
   return { loadResolvers, checkGuards, getRedirectUrl };

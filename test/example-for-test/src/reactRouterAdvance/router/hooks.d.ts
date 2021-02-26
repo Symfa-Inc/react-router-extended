@@ -8,6 +8,6 @@ interface UserManager {
 export declare function useManager({ resolvers, guards, pathname, redirectUrl }: UserManager): {
     loadResolvers: () => Promise<{}>;
     checkGuards: (pathname: string) => Promise<ExtendedRouteStatus>;
-    getRedirectUrl: () => string;
+    getRedirectUrl: () => string | undefined;
 };
 export {};
