@@ -4,7 +4,7 @@ import { Redirect, Route, useLocation } from 'react-router-dom';
 
 import { isNullOrUndefined, setKey } from './helpers';
 import { useManager } from './hooks';
-import { ExtendedRouteProps, ExtendedRouteStatus } from './types';
+import { ExtendedRouteProps, ExtendedRouteStatus, InnerExtendedRouteProps } from './types';
 
 class RouteCollector {
   private children: RouteCollector[] = [];
@@ -41,10 +41,7 @@ export const RouteContext = React.createContext<{ parent: any; outlet: any; rout
   routeResolverInfos: {},
 });
 
-export const ExtendedRoute: FunctionComponent<Omit<
-  ExtendedRouteProps,
-  'setResolverInfo' | 'setGuardStatus' | 'status'
->> = props => {
+export const ExtendedRoute: FunctionComponent<ExtendedRouteProps> = props => {
   const context = React.useContext(RouteContext);
   const [resolverInfo, setResolverInfo] = useState({});
   const [status, setGuardStatus] = useState<ExtendedRouteStatus>(ExtendedRouteStatus.INITIAL);
@@ -105,7 +102,7 @@ export const ExtendedRoute: FunctionComponent<Omit<
   );
 };
 
-const InnerExtendedRouter: FunctionComponent<ExtendedRouteProps> = ({
+const InnerExtendedRouter: FunctionComponent<InnerExtendedRouteProps> = ({
   path,
   component: Component,
   redirectUrl,

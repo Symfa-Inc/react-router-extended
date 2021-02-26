@@ -35,7 +35,7 @@ Let's imagine we have a page with 2 nested subpages/tabs.
   <ExtendedRoute path="/second-nested-child" component={SecondNestedChild} />
 </ExtendedRoute>
 
-function PageWithTabs({ childRoutes }) {
+function PageWithTabs() {
   return (
 	<h2>
 		Page with tabs

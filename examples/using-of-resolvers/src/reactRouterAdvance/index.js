@@ -176,6 +176,7 @@ function useManager(_a) {
     }
     return { loadResolvers: loadResolvers, checkGuards: checkGuards, getRedirectUrl: getRedirectUrl };
 }
+//# sourceMappingURL=hooks.js.map
 
 var RouteCollector = /** @class */ (function () {
     function RouteCollector(currentRouteController, parentRoute) {

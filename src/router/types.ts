@@ -11,9 +11,22 @@ export interface ExtendedRouteProps {
   resolvers?: PropsResolvers;
   exact?: boolean;
   children?: React.ReactNode;
+  // setResolverInfo?: (data: any) => void;
+  // setGuardStatus?: (status: ExtendedRouteStatus) => void;
+  // status?: ExtendedRouteStatus;
+}
+
+export interface InnerExtendedRouteProps {
+  path: string;
+  component: ElementType;
+  redirectUrl?: string;
+  guards?: Guard[];
+  resolvers?: PropsResolvers;
+  exact?: boolean;
+  children?: React.ReactNode;
   setResolverInfo: (data: any) => void;
   setGuardStatus: (status: ExtendedRouteStatus) => void;
-  status?: ExtendedRouteStatus;
+  status: ExtendedRouteStatus;
 }
 
 export enum ExtendedRouteStatus {
