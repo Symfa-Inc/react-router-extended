@@ -137,4 +137,4 @@ function PageWithTabs() {
 
 In component props from the resolver with the name that we have specified in ExtendedRoute are passed to the component.
 
-For a more detailed example, follow the [link](https://gitlab.aisnovations.com/modules/react-router-extended/-/tree/master/examples%2Ftest).
+For a more detailed example, follow the [link](https://github.com/Aiscom-LLC/react-router-extended/tree/master/examples).
